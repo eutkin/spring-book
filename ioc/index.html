@@ -1,0 +1,1044 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.3.0">
+    
+    
+      
+        <title>Spring IoC - Spring Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.572ca0f0.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.962652e9.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#spring-ioc" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="Spring Guide" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Spring Guide
+              </span>
+              <span class="md-header-nav__topic">
+                Spring IoC
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="Spring Guide" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Spring Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Введение" class="md-nav__link">
+      Введение
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Spring IoC
+      </label>
+    
+    <a href="./" title="Spring IoC" class="md-nav__link md-nav__link--active">
+      Spring IoC
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" title="Контейнер бинов и способы его конфигурации" class="md-nav__link">
+    Контейнер бинов и способы его конфигурации
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" title="Вступление" class="md-nav__link">
+    Вступление
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" title="Конфигурация контейнера бинов" class="md-nav__link">
+    Конфигурация контейнера бинов
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" title="Виды конфигурации бинов" class="md-nav__link">
+    Виды конфигурации бинов
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" title="Примеры" class="md-nav__link">
+    Примеры
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" title="Резюме" class="md-nav__link">
+    Резюме
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spring-ioc_1" title="Инверсия зависимостей со Spring IoC" class="md-nav__link">
+    Инверсия зависимостей со Spring IoC
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" title="Инициализация контекста" class="md-nav__link">
+    Инициализация контекста
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" title="Вводная" class="md-nav__link">
+    Вводная
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#java-class" title="Конфигурация через java-class" class="md-nav__link">
+    Конфигурация через java-class
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" title="Пример 1" class="md-nav__link">
+    Пример 1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" title="Пример 2" class="md-nav__link">
+    Пример 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" title="Резюме" class="md-nav__link">
+    Резюме
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spring" title="Конфигурация через аннотация или "Spring, сделай все за меня, братишка"" class="md-nav__link">
+    Конфигурация через аннотация или "Spring, сделай все за меня, братишка"
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" title="Контейнер бинов и способы его конфигурации" class="md-nav__link">
+    Контейнер бинов и способы его конфигурации
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" title="Вступление" class="md-nav__link">
+    Вступление
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" title="Конфигурация контейнера бинов" class="md-nav__link">
+    Конфигурация контейнера бинов
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" title="Виды конфигурации бинов" class="md-nav__link">
+    Виды конфигурации бинов
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" title="Примеры" class="md-nav__link">
+    Примеры
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" title="Резюме" class="md-nav__link">
+    Резюме
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spring-ioc_1" title="Инверсия зависимостей со Spring IoC" class="md-nav__link">
+    Инверсия зависимостей со Spring IoC
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" title="Инициализация контекста" class="md-nav__link">
+    Инициализация контекста
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" title="Вводная" class="md-nav__link">
+    Вводная
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#java-class" title="Конфигурация через java-class" class="md-nav__link">
+    Конфигурация через java-class
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" title="Пример 1" class="md-nav__link">
+    Пример 1
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" title="Пример 2" class="md-nav__link">
+    Пример 2
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" title="Резюме" class="md-nav__link">
+    Резюме
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spring" title="Конфигурация через аннотация или "Spring, сделай все за меня, братишка"" class="md-nav__link">
+    Конфигурация через аннотация или "Spring, сделай все за меня, братишка"
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="spring-ioc">Spring IoC</h1>
+<h2 id="_1">Контейнер бинов и способы его конфигурации</h2>
+<h3 id="_2">Вступление</h3>
+<p>Что такое бин (<code>bean</code>)? Бин это класс, жизненным циклом управляет контейнер спринга.</p>
+<p>Основная задача контейнера бинов заключается в хранении бинов  и управлении их жизненным циклом.</p>
+<p>Каким образом контейнер будет управлять жизненным циклом задается пользователем через <em>конфигурацию</em> бинов, 
+либо самим контейнером способом по умолчанию. </p>
+<p>Единственным необходимым условием включения класса в качестве 
+бина под управлением контейнера - пользователь явно должен указать Spring'у, какие классы будут им 
+управляться.</p>
+<p>Делегирование управления жизненным циклом класса позволяет избавиться от большой части рутинного кода,
+полноценно следовать принципу инвертирования зависимостей и сосредоточить внимание на бизнес-коде, чем на 
+его инфраструктурной части.</p>
+<p>Все бины приложения, как пользовательские, так и служебные, называются контекстом приложения и хранятся 
+в <code>ApplicationContext</code>.</p>
+<h3 id="_3">Конфигурация контейнера бинов</h3>
+<p>Но, чтобы эффективно управлять жизненным циклом, спрингу необходимы подсказки от пользователя. Эти подсказки
+описываются в <em>конфигурации бинов</em> в виде декларативного описания - как создавать объект, в какие поля
+необходимо внедрить зависимости, какие методы вызывать после создания и перед уничтожением объекта и т.д.</p>
+<p>Конфигурации могут иметь зависимости друг на друга посредством импортирования. С помощью это механизма можно
+иметь конфигурации всех типов, импортировав их в одну рутовую конфигурацию, через которую будет 
+инициализироваться Spring контекст.</p>
+<h3 id="_4">Виды конфигурации бинов</h3>
+<p>Есть несколько способов это сделать, давайте их перечислим:</p>
+<ul>
+<li>XML конфигурация. Описание бинов лежит в xml файле с использованием специального синтаксиса. Считается
+устаревшим, используется только стариками, которые не хотят идти в ногу со временем. <ul>
+<li>Плюсы: <ul>
+<li>можно перегружать в рантайме</li>
+</ul>
+</li>
+<li>Минусы: <ul>
+<li>можно перегружать в рантайме</li>
+<li>большой объем, многословный синтаксис</li>
+<li>нет типизации, но спасает IDE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Java-class конфигурация. Описание бинов находится в java классе с использованием различных 
+аннотаций.<ul>
+<li>Минусы: <ul>
+<li>теперь вместо кучи xml пишем кучу кода</li>
+<li>нельзя перегружать в рантайме </li>
+</ul>
+</li>
+<li>Плюсы:<ul>
+<li>типизация, сложно ошибиться</li>
+<li>код писать привычней и приятней чем xml</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Groovy скрипт конфигурация. Описание бинов лежит в groovy скрипте с использованием DSL. Появился 
+со Spring 4.<ul>
+<li>Минусы:<ul>
+<li>им никто не пользуется</li>
+<li>требует груви зависимостей</li>
+</ul>
+</li>
+<li>Плюсы:<ul>
+<li>есть типизация</li>
+<li>можно перегружать в рантайме (ха-ха, прощай xml)</li>
+<li>немногословный синтаксис (привет, java-конфигурация)         </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Kotlin конфигурация. Появилась в Spring 5. Бины описываются с помощью DSL, написанном на котлине. Тоже скрипт. По сути 
+все тоже самое, что и груви, только типизация не динамическая, а статическая, что не может не радовать.
+Must have при написании проектов Spring 5 + Kotlin.</li>
+</ul>
+<h3 id="_5">Примеры</h3>
+<p>Xml конфигурация:</p>
+<pre><code class="xml">&lt;?xml version = &quot;1.0&quot; encoding = &quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns = &quot;http://www.springframework.org/schema/beans&quot;
+   xmlns:xsi = &quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+   xsi:schemaLocation = &quot;http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id = &quot;converterBean&quot; class = &quot;NumberToCharacterConverter&quot; destroy-method=&quot;close&quot;&gt;
+   &lt;/bean&gt;
+
+   &lt;bean id=&quot;someService&quot; class=&quot;SomeServiceImpl&quot; init-method=&quot;init&quot; scope=&quot;prototype&quot;&gt;
+     &lt;constructor-arg&gt;converter&lt;/constructor-arg&gt;
+   &lt;/bean&gt;
+
+&lt;/beans&gt;
+</code></pre>
+
+<p>Java-class конфигурация:     </p>
+<pre><code class="java">@Configuration
+public class Beans {
+
+    @Bean(destroyMethod = &quot;close&quot;)
+    public Converter&lt;Number, Character&gt; converterBean() {
+        return new NumberToCharacterConverter();
+    }
+
+    @Bean(initMethod = &quot;init&quot;)
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    public SomeService someService(Converter&lt;Number, Character&gt; converter) {
+        return new SomeServiceImpl(converter);
+    }
+}
+</code></pre>
+
+<p>Groovy конфигурация:</p>
+<pre><code class="groovy">beans {
+    converterBean(NumberToCharacterConverter) {bean -&gt;
+        bean.destroyMethod = &quot;close&quot; 
+    }
+
+    someService(SomeServiceImpl, converter : converterBean) {bean -&gt;
+        bean.initMethod = &quot;init&quot; 
+        bean.scope = &quot;prototype&quot;     
+    }
+
+}
+</code></pre>
+
+<p>Kotlin конфигурация:</p>
+<pre><code class="kotlin">fun beans() = beans {
+
+    bean&lt;NumberToCharacterConverter&gt;(&quot;converterBean&quot;)
+
+    bean&lt;SomeService&gt;(&quot;someService&quot;) {
+        SomeServiceImpl(ref())
+    }
+}
+</code></pre>
+
+<p>(Да, я не знаю, где в котлине destroy, init методы, так как даже примеры оказалось найти не так просто)</p>
+<p>Отметим еще способ объявления бина через аннотация. Технически это сложно назвать способом конфигурации,
+так как он довольно сильно отличается от других способов. Идея этого способа состоит в том, что в 
+самом классе расставить аннотации и указать на него спрингу. Спрингу считает определение бина из этих
+аннотаций и класс попадает по управление контейнером.</p>
+<pre><code class="java">@Component
+public class NumberToCharacterConverter implements Converter&lt;Number, Character&gt; {
+
+    @Override
+    public Character convert(Number source) {
+        return (char) source.shortValue();
+    }
+
+    @PreDestroy
+    private void destroy() {
+        // это приватный метод-деструктор. Да, destroy методы и init могут быть приватными
+        // он нужен закрывать различные ресурсы
+    }
+}
+
+@Service // это псевдоним для @Component. Он нужен чтобы подчеркнуть, что в классе находится бизнес-логика
+public class SomeServiceImpl implements SomeService {
+
+    private final Converter&lt;Number, Character&gt; converter;
+
+    public SomeServiceImpl(Converter&lt;Number, Character&gt; converter) {
+        this.converter = converter;
+    }
+
+    @PostConstruct
+    public void init() {
+        // это так называемый второй конструктор. 
+        // он нужен, чтобы выполнить какие-то инициализирующие действия уже после
+        // инжекта всех зависимостей
+    }
+
+    public void businessLogic() {
+        converter.convert(1);
+    }
+}
+</code></pre>
+
+<h3 id="_6">Резюме</h3>
+<p>Как видим из примеров, мы можем указать спрингу имя бина, какой именно класс мы передаем под его 
+управление, описываем его зависимости, <em>init</em>, <em>destroy</em> методы (выполняются после инициализации и 
+до уничтожения соответственно).</p>
+<p>Далее мы рассмотрим непосредственно правило инжекции зависимостей</p>
+<h2 id="spring-ioc_1">Инверсия зависимостей со Spring IoC</h2>
+<h3 id="_7">Инициализация контекста</h3>
+<p>В данной части, рассмотрим работу со Spring IoC (inversion of control), одну из реализаций принципа 
+Dependency Inversion.</p>
+<p>Как же работать с контекстом спринга? Для начала его необходимо проинициализировать. </p>
+<p>Способ его инициализации зависит от способа конфигурации. </p>
+<p>Далее мы будем рассматривать все примеры на Java конфигурации, потому что это самый распространенный пример
+конфигурации (процентов так 
+<a href="http://lurkmore.to/95%25_%D0%BD%D0%B0%D1%81%D0%B5%D0%BB%D0%B5%D0%BD%D0%B8%D1%8F_%E2%80%94_%D0%B8%D0%B4%D0%B8%D0%BE%D1%82%D1%8B">95%</a> 
+в относительно новых проектах). Остальные варианты рассмотрите самостоятельно.</p>
+<pre><code class="java">@Configuration
+public class BeansConfiguration {
+
+}
+
+public class Main {
+
+    public static void main(String[] args){
+      final ApplicationContext ctx = new AnnotationConfigApplicationContext(BeansConfiguration.class);
+    }
+}
+</code></pre>
+
+<p>В данном примере, <code>BeansConfiguration</code> это рутовый класс java-class конфигурации контекста.</p>
+<p>В переменной <code>ctx</code> получим инициализированный контекст приложения.</p>
+<h3 id="_8">Вводная</h3>
+<p>Определимся с несколькими терминами:</p>
+<ul>
+<li>
+<p><em>Зависимость класса A типа B</em> -- класс А имеет поле типа B (где B должен быть обязательно интерфейсом, 
+за редким исключением).</p>
+</li>
+<li>
+<p><em>Обязательная зависимость</em> -- зависимость, без которой основная задача класс не выполнима. Например, если
+некоторый сервис оперирует данными, то зависимость от репозитория будет считаться обязательной.</p>
+</li>
+<li>
+<p><em>Опциональная зависимость</em> -- зависимость, которая не вносит какой-либо весомый вклад в выполнении задачи класса, а 
+является вспомогательной, например, какой-либо фильтр, транслятор исключений и так далее. Без данной зависимости
+сервис все равно способен выполнить свою бизнес-задачу. </p>
+</li>
+<li>
+<p><em>Автосвязывание</em> -- если у класс А есть зависимость от типа В и есть только один бин с этим типом, то Spring
+автоматически внедрит зависимость, подставив бин типа В.</p>
+</li>
+</ul>
+<p>Для примера, опишем несколько классов и интерфейсов. Из предыдущих лекций, вы должны помнить, что любой 
+класс, у которого есть поведение (то есть в его методах заключена логика), должен реализовывать интерфейс,
+в котором данная логика имеет формальный вид. Приступим:</p>
+<pre><code class="java">public interface Repository&lt;T, ID&gt; {} // (1)
+
+public class FileStoreRepository implements Repository&lt;Author, Long&gt; {} // (2)
+
+public class JpaRepository implements Repository&lt;Author, Long&gt; {} // (3)
+</code></pre>
+
+<pre><code class="java">public interface AuthorService {} // (4)
+</code></pre>
+
+<pre><code class="java">public interface PrettyPrinter {}  // (5)
+
+public class CapitalizePrettyPrinter implements PrettyPrinter {}  // (6)
+</code></pre>
+
+<p>Мы для простоты не указываем методы в интерфейсах. Посмотрим на пример использования: </p>
+<pre><code class="java">public class AuthorServiceImpl implements AuthorService {  // (7)
+
+    private final Repository&lt;Author, Long&gt; repository; // (8)
+
+    private PrettyPrinter prettyPrinter; // (9)
+
+    private String fieldDependency; // (10)
+
+    public AuthorServiceImpl(Repository&lt;Author, Long&gt; repository) { // (11)
+        this.repository = requiredNonNull(repository, &quot;Repository must be not null&quot;); // (12)
+    }
+
+    @Override
+    public Author getAuthor(Long authorId) {
+        Author author = repository.findOne(authorId);
+
+        if (prettyPrinter != null) {  // (13)
+            String prettyName = prettyPrinter.doNameAsPretty(author.getName());
+            author.setName(prettyName);
+        }
+        return author;
+    }
+
+    public void setPrettyPrinter(PrettyPrinter prettyPrinter) {  // (13)
+        this.prettyPrinter = prettyPrinter;
+    }
+}
+</code></pre>
+
+<pre><code class="java">@Configuration
+public class BeansConfiguration { // (14)
+
+}
+
+public class Main {
+
+    public static void main(String[] args){
+      final ApplicationContext ctx = new AnnotationConfigApplicationContext(BeansConfiguration.class);
+    }
+}
+</code></pre>
+
+<p>Классы (2) и (3) представляют собой репозитории для манипуляции сущностьями авторов в файловой системе и базе данных 
+соответственно. Сервисы (4) и (5) инкапсулируют в себе некоторую бизнес логику, которую реализализуют класс (7) и (8).</p>
+<p>Класс (14) является java конфигурацией.</p>
+<p>Перед примерами работы с конфигурацией, разберем класс <code>AuthorServiceImpl</code> (7).</p>
+<p>Согласно терминам из начала лекции: </p>
+<ul>
+<li>Зависимость <code>repository</code> (8) является обязательной зависимостью, чье наличие является крайне важной. По этому
+она является финальным полем, инициализируется через конструктор и дополнительно проверяем ее на null (12). </li>
+<li>Зависимость <code>prettryPrinter</code> (9) является опциональной, так как она не влияет на выполнение бизнес-задачи 
+сервисом. Для ее внедрения служит <code>setter</code> (13).</li>
+<li>Зависимость <code>fieldDependency</code> (10) нужна, чтобы показать как пример внедрения через поле. Как мы увидим это ниже,
+то через java конфиг нельзя сделать это легко и непринужденно. Несмотря на то, что это очень популярный способ 
+внедрения, этот способ является в корне неверный и не рекомендуется самим Pivotal (разработчики и вендоры спринга).</li>
+</ul>
+<p>Наша задача передать контроль за жизненным циклом перечисленных классов контексту спрингу. </p>
+<h3 id="java-class">Конфигурация через java-class</h3>
+<h4 id="1">Пример 1</h4>
+<p>Разберем следующий пример. Сервис <code>AuthorService</code> (4) при вызове метода <code>getAuthor(authorId)</code> должен возвращать
+сущность автора. Так же необходимо выводить авторов в лог в определенном формате. Авторы должны храниться в файловой системе. Наша задача настроить конфигурация спринга таким 
+образом, чтобы получить приложение, соответствующее условиям задачи. </p>
+<p>Идем в конфигурацию (14) и добавляем необходимы бины:</p>
+<pre><code class="java">@Configuration
+public class BeansConfiguration { // (14)
+
+    @Bean(name = &quot;authorService&quot;) // (15)
+    public AuthorService authorService(
+            Repository&lt;Author, Long&gt; repository, // (16)
+            @Autowired(requiredd = false /* 17 */ ) PrettyPrinter prettyPrinter // (18) 
+        ) {
+        AuthorService authorService = new AuthorServiceImpl(repository);
+        if (prettyPrinter != null) {
+            authorService.setPrettyPrinter(prettyPrinter); // (19)
+        }
+        return authorService; // (20)
+    }   
+
+    @Bean
+    public Repository&lt;Author, Long&gt; fileRepository() { // (21)
+        return new FileStoreRepository();
+    }
+
+    @Bean
+    public PrettyPrinter prettyPrinter() { // (22)
+        return new CapitalizePrettyPrinter();
+    }
+}
+</code></pre>
+
+<p>Теперь разберем пример чуть подробнее. В методе (15), который в спринге называется <code>factory-method</code>, создается
+<code>authorService</code>. Для его создания нам надо получить его зависимости. Чтобы получить ссылки на другие бины, которые нужны
+для создания сервиса, мы пишим их как аргументы (16) и (17) factory метода. Так как <code>PrettyPrinter</code> (5) является 
+опциональной зависимостью, то мы подсказываем спрингу (17), чтобы он не выдавал ошибку, если данного бина не будет.</p>
+<p>После этого мы можем получить через спринг контекст бин <code>AuthorService</code> и получить автора из файловой системы:</p>
+<pre><code class="java">public class Main {
+
+    public static void main(String[] args){
+      final ApplicationContext ctx = new AnnotationConfigApplicationContext(BeansConfiguration.class);
+      AuthorService authorService = ctx.getBean(AuthorService.class);
+      Author authorFromFile = authorService.getAuthorId(1L);
+    }
+}
+</code></pre>
+
+<p>В итоге мы получили искомое приложение, написав спринг конфигурацию.</p>
+<h4 id="2">Пример 2</h4>
+<p>По мере развития нашего проекта, его аудитория разрослась, и теперь мы больше позволить себе хранить авторов в файлах.
+Бизнес хочет аналитику и в этот черный день вам создали тикет мигрировать в базу данных. Так же мы решили отказаться
+от вывода авторов в лог, то есть от <code>PrettyPrinter</code> (5). </p>
+<p>Опустим перенос существующих данных. Нам необходимо изменить способ доступа к данным и вместо файлов использовать 
+базу данных. Для этих целей нам пригодится <code>JpaRepository</code> (3), который так же реализует наш интерфейс <code>Repository</code>. 
+Поэтому изменим спринг конфигурацию таким образом, чтобы вместо файлового репозитория использовался 
+jpa репозиторий:</p>
+<pre><code class="java">@Configuration
+public class BeansConfiguration { // (14)
+
+    @Bean(name = &quot;authorService&quot;) // (15)
+    public AuthorService authorService(
+            Repository&lt;Author, Long&gt; repository, // (16)
+            @Autowired(requiredd = false /* 17 */ ) PrettyPrinter prettyPrinter // (18) 
+        ) {
+        AuthorService authorService = new AuthorServiceImpl(repository);
+        if (prettyPrinter != null) {
+            authorService.setPrettyPrinter(prettyPrinter); // (19)
+        }
+        return authorService; // (20)
+    }   
+
+    @Bean
+    public Repository&lt;Author, Long&gt; jpaRepository() { // (23)
+        return new JpaRepository();
+    }
+
+}
+</code></pre>
+
+<p>Мы удалили бин <code>fileRepository</code> (21) и <code>prettyPrinter</code> (22) за ненадобностью и добавили новый бин
+<code>jpaRepository</code> (23). Если внимательно посмотреть на конфигурацию <code>authorService</code> (15), то можно заметить, что
+метод не изменился, так как мы заранее предусмотрели возможность отсутствия <code>prettryPrinter</code> и ссылаемся не
+на конкретный репозиторий, а на интерфейс.</p>
+<h4 id="_9">Резюме</h4>
+<p>Мы рассмотрели на двух примерах небольшой период жизни небольшого проекта, за который этот проект подвергся 
+изменениям. Очень важный момент в этих примерах состоит в том, что не смотря на изменения требований, менялась
+только конфугация спринга, а ранее написанный код (1) - (13) не менялся. </p>
+<p>Это происходит потому, что мы использовали такие SOLID принципы, как принцип единой ответственности и принцип
+открытости-закрытости, согласно которым, каждый класс выполяет одну задачу и закрыт для модификаций, но открыт 
+для расширения.  </p>
+<h3 id="spring">Конфигурация через аннотация или "Spring, сделай все за меня, братишка"</h3>
+<p>Теперь посмотрим как все будет выглядеть, если будет конфигурировать спринг через аннотации над самими классами:</p>
+<pre><code class="java">public interface Repository&lt;T, ID&gt; {} // (1)
+
+@Repository // (2)
+public class FileStoreRepository implements Repository&lt;Author, Long&gt; {} // (3)
+
+public class JpaRepository implements Repository&lt;Author, Long&gt; {} // (4)
+</code></pre>
+
+<pre><code class="java">public interface AuthorService {} // (5)
+</code></pre>
+
+<pre><code class="java">public interface PrettyPrinter {}  // (6)
+
+@Component // (7)
+public class CapitalizePrettyPrinter implements PrettyPrinter {}  // (8)
+</code></pre>
+
+<p>Мы для простоты не указываем методы в интерфейсах. Посмотрим на пример использования: </p>
+<pre><code class="java">@Service // (9)
+public class AuthorServiceImpl implements AuthorService {  // (10)
+
+    private final Repository&lt;Author, Long&gt; repository; // (11)
+
+    private PrettyPrinter prettyPrinter; // (12)
+
+    @Autowired // (13)
+    private String fieldDependency; // (14)
+
+    public AuthorServiceImpl(Repository&lt;Author, Long&gt; repository) { // (15)
+        this.repository = requiredNonNull(repository, &quot;Repository must be not null&quot;); // (16)
+    }
+
+    @Override
+    public Author getAuthor(Long authorId) {
+        Author author = repository.findOne(authorId);
+
+        if (prettyPrinter != null) {  // (13)
+            String prettyName = prettyPrinter.doNameAsPretty(author.getName());
+            author.setName(prettyName);
+        }
+        return author;
+    }
+
+    @Autowired(required = false) // (17)
+    public void setPrettyPrinter(PrettyPrinter prettyPrinter) {  // (18)
+        this.prettyPrinter = prettyPrinter;
+    }
+}
+</code></pre>
+
+<pre><code class="java">@Configuration
+@ComponentScan(&quot;здесь имя пакета, где лежат ваши бины&quot;) // (19)
+public class BeansConfiguration { // (20)
+
+}
+
+public class Main {
+
+    public static void main(String[] args){
+      final ApplicationContext ctx = new AnnotationConfigApplicationContext(BeansConfiguration.class);
+    }
+}
+</code></pre>
+
+<p>Посмотрим, что изменилось:</p>
+<ul>
+<li>
+<p>В <code>FileStoreRepository</code> (3) добавили аннотацию <code>@Repository</code> (2), которая говорит спрингу, что жизненный цикл
+данного класса передают под управлению спринга. Данная аннотация является аналогом аннотации <code>@Component</code>, которую
+рассмотрим чуть ниже. В отличии от нее, аннотацией <code>@Repository</code> помечаются бины, который операции по 
+манипулированию сущностями в хранилищах.</p>
+</li>
+<li>
+<p>Над <code>CapitalizePrettyPrinter</code> (8) появилась аннотация <code>@Component</code> (7). Этой аннотацией помечаются все классы, 
+которые мы хотим сделать бинами. Этой аннотацией следуют помечать те классы, которые не имеют отношения к хранению
+данных или бизнес-логике. Например, какие-то инфраструктурные классы.</p>
+</li>
+<li>
+<p>Над сервисом <code>AuthorServiceImpl</code> (10) появилась аннотация <code>@Service</code> (9). Этой аннотацией помечаются все бины,
+которые инкапсулируют в себе бизнес-логику. </p>
+</li>
+</ul>
+<p>Теперь разберем как показать спрингу, какие зависимости мы хотим внедрить.</p>
+<p>Зависимость от <code>Repository</code> (11) мы получаем через конструктор и здесь ничего дополнительно указывать не надо,
+т.к. чтобы создать объект сервиса, спрингу необходимо все равно внедрить зависимость, указанную в аргументах
+конструктора.</p>
+<p>Зависимость от <code>PrettryPrinter</code> (12) мы получаем через сеттер (17), так как данная зависимость является 
+опциональной. Для автосвязаывания мы используем аннотацию <code>@Autowired</code> с флагом required = false, чтобы спринг
+не выдавал ошибку, в случае отсутствия бина.</p>
+<p>Чтобы внедрить зависимость в поле <code>fieldDependency</code> (14), мы также используем данную аннотацию (13). Но еще раз 
+повторю, внедрять зависимости через поле запрещено (если это, конечно, не тесты)</p>
+<p>Последним шагом укажем в конфигурации (20) аннотацию <code>@ComponentScan</code> (19), которая подскажет спрингу, в 
+каком пакете искать наши бины.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href=".." title="Введение" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Введение
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.a353778b.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>
