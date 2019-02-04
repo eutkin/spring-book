@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>Современное ООП или почему классическое ООП мертво? - Spring Guide</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="generator" content="mkdocs-1.0.4, mkdocs-gitbook-1.0.7">
+
+<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta rel="next" href="" />
+<link href="../css/style.min.css" rel="stylesheet"> 
+</head>
+
+<body>
+<div class="book">
+<div class="book-summary">
+<div id="book-search-input" role="search">
+<input type="text" placeholder="Type to search" />
+</div> <!-- end of book-search-input -->
+
+<nav role="navigation">
+<ul class="summary">
+<li>
+<a href=".." target="_blank" class="custom-link">Spring Guide</a>
+</li>
+<li class="divider"></li>
+<li class="chapter" data-path="">
+<a href="..">Введение</a>
+<li class="chapter" data-path="ioc/">
+<a href="../ioc/">Spring IoC</a>
+<li class="chapter active" data-path="oop/">
+<a href="./">Современное ООП или почему классическое ООП мертво?</a>
+<li class="divider"></li>
+
+
+
+<li><a href="http://www.mkdocs.org">
+Published with MkDocs
+</a></li>
+
+<li><a href="https://github.com/GitbookIO/theme-default">
+Theme by GitBook
+</a></li>
+</ul>
+
+</nav>
+
+</div> <!-- end of book-summary -->
+
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+
+<!-- Title -->
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="." ></a>
+</h1>
+
+</div> <!-- end of book-header -->
+
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+<div id="book-search-results">
+<div class="search-noresults">
+
+<section class="normal markdown-section">
+
+
+
+<h1 id="_1">Современное ООП или почему классическое ООП мертво?</h1>
+<h2 id="_2">Классическое ООП, которое мы все знаем</h2>
+<p>Как объясняют ООП в большинстве случаев? </p>
+<p>Есть класс <code>Animal</code>, от него наследуются <code>Cat</code> и <code>Dog</code>. Животное может иметь цвет, имя, издавать звуки и бегать.</p>
+<pre><code class="java">abstract class Animal {
+
+   protected String name;
+
+   protected Animal(String name) {
+       this.name = name;
+   }
+
+   public abstract void run();
+
+   public respondName(String anyName) {
+       if (name.equals(anyName)) {
+           run();
+       }
+   }
+}
+
+class Cat extends Animal {
+
+    public Cat(String name) {
+        super(name);
+    }
+
+    @Override
+    public void run() {
+       System.out.println(&quot;Дык дык дык&quot;);
+    }
+
+    public void climbTree() {
+        // cat can to climb a tree
+    }
+}
+
+class Dog extends Animal {
+
+    public Cat(String name) {
+        super(name);
+    }
+
+    @Override
+    public void run() {
+       System.out.println(&quot;*звук бегающей собаки*&quot;);
+    }
+
+    public void bringBall() {
+        // dog can bring the ball
+    }
+}
+
+public class Main {
+    public static void main(String[] args){
+      for (Animal animal : asList(new Cat(&quot;Barsik&quot;, RED), new Dog(&quot;GoodBoy&quot;, BLUE))) {
+          animal.respondName(&quot;Barsik&quot;);        
+      }
+    }
+}
+
+// printed: Дык дык дык
+</code></pre>
+
+<p>Каждый класс представляет собой объект реального мира, у которого есть какие-то характеристики и поведение. </p>
+<p>В этом сниппете кода можно увидеть все принципы ООП:</p>
+<ul>
+<li>Наследование. Кошка и собака наследуют все черты, характерные для класса Животные, который мы описали. Они не 
+только могут откликаться на свои имя и  бегать, но и имеют уникальные черты, например, кошка может забираться 
+на дерево, а собака - приносить мячик.</li>
+<li>Инкапсуляция. Здесь инкапулирован поле с именем, его значение вне класса мы получить не можем.</li>
+<li>Полиморфизм. Не зависимо от типа животного, кошка или собака, мы можем окликнуть их по имени, так как это 
+свойственно классу Животные.</li>
+<li>Абстракция. При создании классов мы взяли только свойства и поведение, которые нам необходимы, а не описывали
+все детально. То есть, наш класс Животное - это некая абстракция над реальным животным, над объектом реального мира.</li>
+</ul>
+<p>Не так сложно, да? Но что же могло пойти не так...</p>
+<h2 id="_3">Почему классическое ООП умерло?</h2>
+<h3 id="_4">Маленький жизненный пример</h3>
+<p>Вы устроились на работу программистом Java и ваше первое большое и ответственное задание - написать с коллегой
+REST сервис, который отдает информацию о офисных работниках фирмы. Информация о работниках лежит в текстовых файлах 
+на файловом сервере компании. Ваш коллега написать REST часть (ок, гугл, что такое REST), ваша задачи прочитать
+из файлов работников.</p>
+<p>Так, погодите, а где кошечки и собачки? Эй? Хм, хорошо. у нас есть хотя бы класс Работник, да? Отлично, давайте
+напишем для него класс.</p>
+<pre><code class="java">public class Employee {
+    private Long id;
+    private String name;
+} 
+</code></pre>
+
+<p>Так, мы создали класс, добавили туда пару полей, заинкапсулировали их. Осталось добавить пару действий, которые
+могут выполнять наши работники и все будет отлично. Хм. Так, мы же пишем REST сервис, а он обычно отдает информацию
+в JSON (другие программисты говорили об этом в курилке). Добавим метод конвертации в json, как раз прям классика
+будет:</p>
+<pre><code class="java">public class Employee {
+    private Long id;
+    private String name;
+
+    public String toJson() {
+        return &quot;{\&quot;id\&quot;: &quot; + id + &quot;, \&quot;name\&quot; : &quot; + name + &quot; }&quot;;
+    }
+} 
+</code></pre>
+
+<p>А что у нас говорит ООП? Классы моделируют объекты реального мира, а умеют ли у нас работник компании
+преобразовывать себя в Json? Что-то сомнительно. Но это мелочи жизни, давайте пойдем дальше.</p>
+<p>Работники у нас хранятся в файлах и нам их надо оттуда достать. Давайте подумаем, как это сделать в рамках
+классического ООП.</p>
+<p>Если мы добавили метод для преобразования данных в json, почему бы не добавить метод для чтения
+работника из файла? Нет, это глупо, работник же не может сам себя вычитать из файла. Значит, это должен делать
+кто-то другой. Но мы можем сделать конструктор для класс Работник, который принимает строку из файла и создать класс
+Архив, который будет читать работников из файла:</p>
+<pre><code class="java">public class Employee {
+
+    private Long id;
+    private String name;
+
+    public Employee(String line) {
+        String[] parts = line.split(&quot;,&quot;);
+        this.id = Long.parseLong(parts[0]);
+        this.name = parts[1];
+    }
+
+    public String toJson() {
+        return &quot;{\&quot;id\&quot;: &quot; + id + &quot;, \&quot;name\&quot; : &quot; + name + &quot; }&quot;;
+    }
+} 
+
+public interface IArchive&lt;T&gt; {
+
+     List&lt;T&gt; getObjects();
+
+}
+
+public abstract class Archive&lt;T&gt; {
+
+    protected List&lt;T&gt; objects = new ArrayList&lt;&gt;();
+
+    protected List&lt;String&gt; lines = new ArrayList&lt;&gt;();
+
+    private final String fileName;
+
+    protected Archive(String fileName) {
+        this.fileName = fileName;
+    }
+
+    protected void readFromFiles() {
+        // здесь реализовано неблокирующее чтение.
+        // писать я его не буду, потому что это сложнее, чем привычное блокирующее чтение из файла
+        // но неблокирующее выбрано, чтобы не создавать непреодолимых узких мест в системе,
+        // так как мы дальше коснемся многопоточки и производительности
+        this.lines = unlockableReadLines;
+    }
+
+    public List&lt;T&gt; getObjects() {
+        readFromFiles();
+        parseLine();
+        return objects;
+    }
+
+    protected abstract void parseLine();
+}
+
+public class EmployeeArchive extends Archive&lt;Employee&gt; {
+
+    public EmployeeArchive() {
+        super(&quot;employees.csv&quot;);
+    }
+
+    @Override
+    protected parseLine() {
+        List&lt;Employee&gt; employees = new ArrayList&lt;&gt;();
+        for (String line : super.lines) {
+            employees.add(new Employee(line));
+        }
+        this.objects = employees;
+    }
+}
+
+public class EmployeeServlet extends HttpServlet {
+
+    private final IArchive&lt;Employee&gt; archive;
+
+    public EmployeeServlet(IArchive&lt;Employee&gt; archive) {
+        this.archive = archive;
+    }
+
+    public void doGet(HttpServletRequest req, HttpServletResponse res) {
+        // ...
+        List&lt;Employee&gt; employees = archive.getObjects();
+
+        StringJoiner sj = new StringJoiner(&quot;[&quot;, &quot;]&quot;);
+        employees.forEach(sj::add);
+
+        res.write(sj.toString());
+    }
+}
+</code></pre>
+
+<p>С энтузиазмом пишем сначала абстрактный класс и его наследника, который будет читать только работников из файла
+'employees.csv'. </p>
+<p>Проанализируем написанное с точки зрения классического ООП.</p>
+<p>У класса Архив есть состояние (прочитанные строки и распарсенные в объекты работники) и поведение - публичный
+метод получить объекты из архива, скрытые от внешних глаз (привет, инкапсуляция) методы для чтения файла и 
+абстрактный метод для парсинга из текста в объекты, который мы реализуем в класса Архив Работников. Все отлично.</p>
+<p>Вы радостно пишите коллеге, что закончили свою часть и даже больше (вы еще же добавили метод по конвертации в 
+json!) и коммитите ваш код в репозиторий проекта.</p>
+<p>Ваш коллега используя сервлет и томкат (про которые вы тоже слышали) и используя ваш кода дописывает сервис. </p>
+<p>Вы с коллегой довольные собой 
+<img alt="oop1" src="../img/oop1.jpg" /></p>
+<p>В чем же причина? Сервлеты на каждый запрос используют новый тред, а ваш класс не синхронизирован. Справедливо,
+правим наш класс Архив:</p>
+<pre><code class="java">public abstract class Archive&lt;T&gt; {
+
+    protected List&lt;T&gt; objects = new ArrayList&lt;&gt;();
+
+    protected List&lt;String&gt; lines = new ArrayList&lt;&gt;();
+
+    private final String fileName;
+
+    protected Archive(String fileName) {
+        this.fileName = fileName;
+    }
+
+    protected void readFromFiles() {
+        // здесь реализовано неблокирующее чтение.
+        // писать я его не буду, потому что это сложнее, чем привычное блокирующее чтение из файла
+        // но неблокирующее выбрано, чтобы не создавать непреодолимых узких мест в системе,
+        // так как мы дальше коснемся многопоточки и производительности
+        this.lines = unlockableReadLines;
+    }
+
+    public synchronized List&lt;T&gt; getObjects() { // (1)
+        readFromFiles();
+        parseLine();
+        return objects;
+    }
+
+    protected abstract void parseLine();
+}
+</code></pre>
+
+<p>Теперь вызывать метод (1) может только один поток и теперь падать ничего не должно. Отдаем на тесты и сервис не 
+проходит нагрузчное тестирование. Так как теперь все треды ждут, пока один из них прочитает данные из файла.</p>
+<p>Так как файл читается неблокирующее, то мы принимаем решение создавать на каждый запрос (он же тред) свой экземпляр
+объекта <code>EmployeeArchive</code>, что решает проблему, правда ценой б<em>о</em>льшими затратами ОЗУ, так как каждый тред будет 
+держать в памяти две коллекции - работники как строки и как объекты.</p>
+<h3 id="_5">Что не так с кодом</h3>
+<p><em>Перед чтением причин 'а что не так' следует отметить, что приведенный пример кода довольно простой.
+Из этого следует, что некоторые перечисленные ниже минусы будут не настолько очевидны, как хотелось бы
+автору сего опуса, за что прошу меня извинить.</em></p>
+<h4 id="_6">Наличие состояние и многопоточность.</h4>
+<p>Большой процент сервисов (написанных на яве) работают многопоточно (например, томкат и аналоги создают на каждый запрос поток (thread), причем
+создают неявно). При многопоточности нам надо синхронизировать состояние между потоками. Это ведет к усложнению кода, к просадке
+производительности (потому что потоков много, а объект синхронизации один) и другим неприятным вещам,
+которыми пугают детей программистов <img alt="Screenshot" src="../img/opp2.jpg" /></p>
+<h4 id="_7">Неявность состояния и поведения.</h4>
+<p>Неявность в данном случае - это отсутствие возможности быстро 
+определить в каком состоянии объект или что будет результатом работы его метода. Это сильно влияет на читаемоесть 
+кода, его понимание и восприятие другим человеком. Будучи начинающим программистом вы писали код для себя. Теперь
+вы пишите его для других и поэтому важно, чтобы ваш код был понятен не-программисту.</p>
+<p>Разберем несколько подробней. Неявность состояния. </p>
+<pre><code class="java">public class Main {
+    public static void main(String[] args){ 
+        List&lt;Employee&gt; employees = archive.getObjects(); // (1)
+    }
+}
+</code></pre>
+
+<p>Допустим, поток, в котором мы выполняем метод (1) был прерван (interrupted). В каком состоянии находится данный
+объект? Что будем, если мы вызовем метод (1) еще раз? У нас не ответа на эти вопросы.  </p>
+<p>Другая проблема заключается в сложности реализации. Один из принципов ООП нам говорит, что состояние объекта 
+должно быть инкапсулировано. Это замечательный принцип, но ровно до того момента, когда вам необходимо понять, 
+как работает метод (1). </p>
+
+
+</section>
+</div> <!-- end of search-noresults -->
+<div class="search-results">
+<div class="has-results">
+
+<h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+<ul class="search-results-list"></ul>
+
+</div> <!-- end of has-results -->
+<div class="no-results">
+
+<h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+
+</div> <!-- end of no-results -->
+</div> <!-- end of search-results -->
+</div> <!-- end of book-search-results -->
+
+</div> <!-- end of page-inner -->
+</div> <!-- end of page-wrapper -->
+
+</div> <!-- end of body-inner -->
+
+</div> <!-- end of book-body -->
+<script src="../js/main.js"></script>
+<script src="../search/main.js"></script>
+<script src="../js/gitbook.min.js"></script>
+<script src="../js/theme.min.js"></script>
+</body>
+</html>
