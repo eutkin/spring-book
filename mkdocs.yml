@@ -3,4 +3,7 @@ docs_dir: source
 site_dir: docs
 theme:
   name: gitbook
-  
+nav:
+  - Введение : index.md
+  - ООП : oop.md
+  - Spring IoC: ioc.md
