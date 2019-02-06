@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<title>QA - Spring Guide</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<meta name="generator" content="mkdocs-1.0.4, mkdocs-gitbook-1.0.7">
+
+<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta rel="next" href="" />
+<link href="../css/style.min.css" rel="stylesheet"> 
+</head>
+
+<body>
+<div class="book">
+<div class="book-summary">
+<div id="book-search-input" role="search">
+<input type="text" placeholder="Type to search" />
+</div> <!-- end of book-search-input -->
+
+<nav role="navigation">
+<ul class="summary">
+<li>
+<a href=".." target="_blank" class="custom-link">Spring Guide</a>
+</li>
+<li class="divider"></li>
+<li class="chapter" data-path="">
+<a href="..">Введение</a>
+<li class="chapter" data-path="archicture/">
+<a href="../archicture/">Архитектура</a>
+<li class="chapter" data-path="oop/">
+<a href="../oop/">ООП</a>
+<li class="chapter" data-path="ioc/">
+<a href="../ioc/">Spring IoC</a>
+<li class="chapter active" data-path="qa/">
+<a href="./">QA</a>
+<li class="divider"></li>
+
+
+
+<li><a href="http://www.mkdocs.org">
+Published with MkDocs
+</a></li>
+
+<li><a href="https://github.com/GitbookIO/theme-default">
+Theme by GitBook
+</a></li>
+</ul>
+
+</nav>
+
+</div> <!-- end of book-summary -->
+
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+
+<!-- Title -->
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="." ></a>
+</h1>
+
+</div> <!-- end of book-header -->
+
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+<div id="book-search-results">
+<div class="search-noresults">
+
+<section class="normal markdown-section">
+
+
+
+<h1 id="qa">Кратко о QA</h1>
+<h2 id="_1">Жизненный цикл ПО</h2>
+<p>Жизненным циклом программного обеспечения (SLC) является период времени, начинающийся с момента появления концепции ПО 
+и заканчивающийся тогда, когда использование ПО более невозможно.</p>
+<p>Жизненный цикл программного обеспечения обычно включает в себя следующие этапы: </p>
+<ol>
+<li>Принятия решения (идея) о необходимости создания ПО;</li>
+<li>Сбор и анализ требований;</li>
+<li>Дизайн (Системы и ПО) на основе требований;</li>
+<li>Кодирование на основе дизайна системы;</li>
+<li>Тестирование;</li>
+<li>Внедрение в пользовательскую среду;</li>
+<li>Сопровождение (в том числе фиксация найденных в пользовательской среде ошибок);</li>
+<li>Изъятие из эксплуатации (редко);</li>
+</ol>
+<h2 id="quality-assurance-qa">Quality Assurance (QA) или немного о тестировании</h2>
+<p>Существует 3 термина, которые легко перепутать: тестирование (Testing), контроль качества (QC – Quality Control) 
+и обеспечение качества (QA — Quality Assurance). Все они связаны друг c другом: QA – самое широкое понятие, оно включает 
+в себя QC, в которое входит тестирование.</p>
+<p><img alt="qa" src="../img/qa1.jpg" /></p>
+<ol>
+<li>
+<p><strong>Обеспечение качества (QA)</strong> отвечает за весь процесс разработки, поэтому должно быть интегрировано во все этапы 
+разработки: от описания проекта до тестирования, релиза и даже пост-релизного обслуживания. 
+Специалисты QA создают и реализуют различные тактики для повышения качества на всех стадиях производства: 
+подготовка и установление стандартов, анализ качества, выбор инструментов, предотвращение появления ошибок и 
+постоянное усовершенствование процесса.</p>
+</li>
+<li>
+<p>Задача <strong>Контроля качества (QC)</strong> — гарантировать соответствие требованиям (поиск ошибок и их устранение).
+ QC ориентирован на проверку продукта, включает в себя многие процессы, такие как анализ кода, технические обзоры, 
+ анализ дизайна, тестирование и пр.</p>
+</li>
+<li>
+<p><strong>Тестирование</strong> — это проверка результатов работы на соответствие требованиям.</p>
+</li>
+</ol>
+<h2 id="_2">Пирамида тестирования</h2>
+<p><img alt="qa2" src="../img/qa2.png" /></p>
+<ul>
+<li><strong>Unit тесты</strong> -- тестирование отдельного модуля ПО (в Java модулем является класс). Проверяется только сам модуль,
+всего его зависимости заменяются на заглушки. Данный тип тесты должны писать разработчики.</li>
+<li><strong>Service/Integration/API тесты</strong> -- интеграционные тесты. Проверяется группа модулей, их взаимодействие. Могут писать 
+как разработчики, так и автоматизаторы из QA</li>
+<li><strong>UI тесты</strong> -- тестирование пользовательского интерфейса. Разрабатываются только автоматизаторами из QA.</li>
+<li><strong>Ручное тестирование</strong> -- обычно тестирование пользовательского интерфейса руками. Дешево и сердито. </li>
+</ul>
+<h2 id="java">Инструменты тестирования (в контексте Java)</h2>
+<p>Звездочкой обозначены обязательные знания по данному инструменты</p>
+<ul>
+<li><strong>Unit тестирование</strong>:<ul>
+<li><strong>Junit 4</strong>* -- самый распространненый фреймворк для тестирования. Есть абсолютно везде.  </li>
+<li><strong>Junit 5</strong> -- свежеая версия предудыщего фреймворка, но пока встречается реже</li>
+<li><strong>Spock</strong> -- редкий инструмент для <strong>BDD</strong> (<strong>Behavior-driven development</strong>) тестирования на языке Groovy.</li>
+<li><strong>Mockito</strong>* -- вспомогательная библиотека, позволяющая изолировать модуль от зависимостей.</li>
+<li><strong>PowerMock</strong> -- более мощная версия предыдущей библиотеки</li>
+<li><strong>TestNG</strong> -- аналог для <strong>Junit</strong>, но не так популярен</li>
+</ul>
+</li>
+<li><strong>Integration/API тестирование</strong>:</li>
+<li><strong>REST Assured</strong>* -- библиотека для тестирования API</li>
+<li><strong>Cucumber</strong>* -- самый популярный фреймворк для написания интеграционных тестов. Есть для многих языков</li>
+<li><strong>Gauge</strong> -- тоже самое, но с небольшими отличиями </li>
+<li><strong>UI тестирование</strong><ul>
+<li><strong>Selenium</strong>* -- инструмент, который позволяет эмулировать браузеры и взаимодействие пользователя и UI. </li>
+</ul>
+</li>
+</ul>
+<h2 id="requirements-traceability-matrix">Матрица соответствия требований (Requirements Traceability Matrix)</h2>
+<p>Это двумерная таблица, содержащая соответствие функциональных требований (<strong>functional requirements</strong>) продукта и 
+подготовленных тестовых сценариев (<strong>test cases</strong>). В заголовках колонок таблицы расположены требования, 
+а в заголовках строк — тестовые сценарии. На пересечении — отметка, означающая, что требование текущей колонки 
+покрыто тестовым сценарием текущей строки. Матрица обычно хранится в виде электронной таблицы.</p>
+<p><strong>Матрица соответствия требований</strong> используется <strong>QA</strong>-инженерами для валидации покрытия требований по продукту
+ тестами. Цель «Traceability Matrix» состоит в том, чтобы выяснить:
+<em> какие требования «покрыты» тестами, а какие нет.
+</em> избыточность тестов (одно функциональное требование покрыто большим количеством тестов).</p>
+<p><img alt="qa3" src="../img/qa3.png" /></p>
+
+
+</section>
+</div> <!-- end of search-noresults -->
+<div class="search-results">
+<div class="has-results">
+
+<h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+<ul class="search-results-list"></ul>
+
+</div> <!-- end of has-results -->
+<div class="no-results">
+
+<h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+
+</div> <!-- end of no-results -->
+</div> <!-- end of search-results -->
+</div> <!-- end of book-search-results -->
+
+</div> <!-- end of page-inner -->
+</div> <!-- end of page-wrapper -->
+
+</div> <!-- end of body-inner -->
+
+</div> <!-- end of book-body -->
+<script src="../js/main.js"></script>
+<script src="../search/main.js"></script>
+<script src="../js/gitbook.min.js"></script>
+<script src="../js/theme.min.js"></script>
+</body>
+</html>

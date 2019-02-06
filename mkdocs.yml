@@ -5,5 +5,8 @@ theme:
   name: gitbook
 nav:
   - Введение : index.md
+  - Архитектура : archicture.md
   - ООП : oop.md
   - Spring IoC: ioc.md
+  - QA : qa.md
+  
