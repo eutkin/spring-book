@@ -6,6 +6,7 @@ theme:
 nav:
   - Введение : index.md
   - Архитектура : archicture.md
+  - Архитектура. Практика: a1.md
   - ООП : oop.md
   - Spring IoC: ioc.md
   - QA : qa.md
