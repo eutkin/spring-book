@@ -2,11 +2,12 @@ site_name: Spring Guide
 docs_dir: source
 site_dir: docs
 markdown_extensions:
+  - pymdownx.details
   - toc:
       permalink: "#"
       baselevel: 1
 theme:
-  name: gitbook
+  name: material
 nav:
   - Введение : index.md
   - Архитектура : archicture.md

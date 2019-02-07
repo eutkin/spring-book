@@ -1,86 +1,392 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<title>Архитектура. Практика - Spring Guide</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-<meta name="generator" content="mkdocs-1.0.4, mkdocs-gitbook-1.0.7">
 
-<link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
-<meta name="HandheldFriendly" content="true"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta rel="next" href="" />
-<link href="../css/style.min.css" rel="stylesheet"> 
-</head>
 
-<body>
-<div class="book">
-<div class="book-summary">
-<div id="book-search-input" role="search">
-<input type="text" placeholder="Type to search" />
-</div> <!-- end of book-search-input -->
 
-<nav role="navigation">
-<ul class="summary">
-<li>
-<a href=".." target="_blank" class="custom-link">Spring Guide</a>
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.3.0">
+    
+    
+      
+        <title>Архитектура. Практика - Spring Guide</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.572ca0f0.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.962652e9.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#_1" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="Spring Guide" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Spring Guide
+              </span>
+              <span class="md-header-nav__topic">
+                Архитектура. Практика
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="Spring Guide" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Spring Guide
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Введение" class="md-nav__link">
+      Введение
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../archicture/" title="Архитектура" class="md-nav__link">
+      Архитектура
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Архитектура. Практика
+      </label>
+    
+    <a href="./" title="Архитектура. Практика" class="md-nav__link md-nav__link--active">
+      Архитектура. Практика
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" title="Введение" class="md-nav__link">
+    Введение
+  </a>
+  
 </li>
-<li class="divider"></li>
-<li class="chapter" data-path="">
-<a href="..">Введение</a>
-<li class="chapter" data-path="archicture/">
-<a href="../archicture/">Архитектура</a>
-<li class="chapter active" data-path="a1/">
-<a href="./">Архитектура. Практика</a>
-<li class="chapter" data-path="oop/">
-<a href="../oop/">ООП</a>
-<li class="chapter" data-path="ioc/">
-<a href="../ioc/">Spring IoC</a>
-<li class="chapter" data-path="qa/">
-<a href="../qa/">QA</a>
-<li class="divider"></li>
-
-
-
-<li><a href="http://www.mkdocs.org">
-Published with MkDocs
-</a></li>
-
-<li><a href="https://github.com/GitbookIO/theme-default">
-Theme by GitBook
-</a></li>
-</ul>
-
+      
+        <li class="md-nav__item">
+  <a href="#_3" title="Калькулятор" class="md-nav__link">
+    Калькулятор
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" title="Декомпозиция" class="md-nav__link">
+    Декомпозиция
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" title="Функциональная декомпозиция" class="md-nav__link">
+    Функциональная декомпозиция
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
+    
+  </li>
 
-</div> <!-- end of book-summary -->
-
-<div class="book-body">
-<div class="body-inner">
-<div class="book-header" role="navigation">
-
-<!-- Title -->
-<h1>
-<i class="fa fa-circle-o-notch fa-spin"></i>
-<a href="." ></a>
-</h1>
-
-</div> <!-- end of book-header -->
-
-<div class="page-wrapper" tabindex="-1" role="main">
-<div class="page-inner">
-<div id="book-search-results">
-<div class="search-noresults">
-
-<section class="normal markdown-section">
+    
+      
+      
+      
 
 
+  <li class="md-nav__item">
+    <a href="../oop/" title="ООП" class="md-nav__link">
+      ООП
+    </a>
+  </li>
 
-<h1 id="_1">Архитектура на практике<a class="headerlink" href="#_1" title="Permanent link">#</a></h1>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../ioc/" title="Spring IoC" class="md-nav__link">
+      Spring IoC
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../qa/" title="QA" class="md-nav__link">
+      QA
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" title="Введение" class="md-nav__link">
+    Введение
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" title="Калькулятор" class="md-nav__link">
+    Калькулятор
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" title="Декомпозиция" class="md-nav__link">
+    Декомпозиция
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_5" title="Функциональная декомпозиция" class="md-nav__link">
+    Функциональная декомпозиция
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="_1">Архитектура на практике<a class="headerlink" href="#_1" title="Permanent link">#</a></h1>
 <h2 id="_2">Введение<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
 <p>Перед прочтением данной главы, ознакомьтесь с <a href="../archicture/">главой про архитектуру</a>.</p>
 <p>Здесь же, мы разберем на практике принципы и приемы по построению грамотного дизайна на примере нескольких систем.</p>
@@ -115,7 +421,8 @@ feature/ для задач и bugfix/ для багов</li>
 </ul>
 <h2 id="_3">Калькулятор<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
 <h3 id="_4">Декомпозиция<a class="headerlink" href="#_4" title="Permanent link">#</a></h3>
-<p>Первым шагом при решении любой задачи является декомпозиция: разбиение большой задачи на части. </p>
+<h4 id="_5">Функциональная декомпозиция<a class="headerlink" href="#_5" title="Permanent link">#</a></h4>
+<p>Первым шагом при решении любой задачи является декомпозиция: разбиение большой задачи на задачи поменьше. </p>
 <p>Проще всего начать с <a href="../archicture/#_7">функциональной декомпозиции</a>. Попробуем определить независисые друг от друга задачи, которые должна
 выполнять система, исходя из требований:</p>
 <ul>
@@ -138,25 +445,48 @@ feature/ для задач и bugfix/ для багов</li>
 </li>
 <li>
 <p>Расчет задания -- медленная операция, так как аналитические запросы выполняются на больших массивах
-данных. Это гораздо медленнее, чем запрос запрос в базе по индексу (возможная операция в первой задаче) или 
+данных. Это гораздо медленнее, чем делать запрос в базе по индексу (возможная операция в первой задаче) или 
 обработка в памяти.</p>
 </li>
 <li>
 <p>Отправка результата задания по указанному адресу -- средняя по скорости операция. 
 Отправка POST запроса на внешний сервис
-происходит быстро, но здесь необходимо предусмотреть недоступность внешнего сервиса и ожидания его доступности </p>
+происходит быстро, но здесь необходимо предусмотреть недоступность внешнего сервиса и связанные с этим сценарии. </p>
 </li>
 </ul>
-<p>В итоге получаем 3 функциональных модуля, каждый из которых выполняет свою независимую задачу.</p>
-<p>У нас есть быстро работающий медленно и среднее работающие модули соответственно. Представим, что нагрузка 
+<p>В итоге получаем 3 функциональных модуля, каждый из которых выполняет свою независимую задачу с разной скоростью
+обработки.</p>
+<details class="tip"><summary>Совет</summary><p>Когда стоит выделять модуль в отдельный сервис?</p>
+<ul>
+<li>
+<p>имеет строго выделенную, независимую от других модулей зону ответственности. </p>
+</li>
+<li>
+<p>для выполнения функционала сервису необходимы только входные данные и сторонние системы: базы данных, брокеры
+сообщений, веб-сервисы.</p>
+</li>
+<li>
+<p>есть требования к масштабируемости</p>
+</li>
+</ul>
+<details><summary>Термин</summary><p>Масштабируемость -- процесс, когда производительность системы пропорционально зависит от количества
+затраченных ресурсов. В бытовом плане чаще всего подразумевается горизонтальная машстабируемость, где
+под ресурсами имеется виду количество экземпляров сервиса</p>
+</details>
+</details>
+<p>Представим, что нагрузка 
 на нашу систему стала резко расти. Первый модуль работает отлично. Но второй, рассчитывающий поступающие задания,
 не успевает обрабатывать возврастающий поток заданий и начинает захлебываться под нагрузкой. В итоге, задания
-не обрабатываются и производительность системы резко падает. </p>
+не обрабатываются и производительность системы резко падает, так как второй модуль становится бутылочным горлышком. </p>
 <p>Это происходит по причине неравномерной скорости работы модулей. Если скорость обработки у модулей отличаются
 на некоторую малую величину (давайте примем ее в 1 секунду. При условии, что скорость обработки в памяти занимает
-миллисекунды, то это довольно большая разница). </p>
-<p>Здесь нам на помощь приходит прием <a href="../archicture/#_10">Замена прямых зависимостей на обмен сообщениями</a>.</p>
-<p>Обмен сообщениями между модулями с разной скоростью работы мы организуем с помощью очереди. Одна очередь свяжет
+миллисекунды, то это довольно большая величина). </p>
+<p>Для решения этой проблемы мы можем воспользоваться приемом <a href="../archicture/#_10">Замена прямых зависимостей на обмен сообщениями</a>.</p>
+<details class="example"><summary>Пример</summary><p>Вы пришли в дикси за хлебом. Но на данный момент открыты только две кассы, а покупателей, желающих оплатить покупки
+и уйти, гораздо больше и их количество увеличивается. То есть нагрузка на кассы превышает их производительность.
+Для оплаты хлебушка, вы встаете в <strong>очередь</strong></p>
+</details>
+<p>Обмен сообщениями между модулями с разной скоростью работы мы организуем с помощью очередей. Одна очередь свяжет
 модули приема и расчета заданий, другая - модуль расчета и обработки результат заданий. </p>
 <p>В итоге, мы получаем следующие функциональные модули:</p>
 <ul>
@@ -181,34 +511,84 @@ feature/ для задач и bugfix/ для багов</li>
 </ul>
 </li>
 </ul>
+<p>Очереди сообщений идут отдельной системой, так как они должны быть отказоустойчивыми и персистентными (чтобы в случае
+аварий не терять сообщения)    </p>
+<h4 id="_6"><a class="headerlink" href="#_6" title="Permanent link">#</a></h4>
+                
+                  
+                
+              
+              
+                
 
 
-</section>
-</div> <!-- end of search-noresults -->
-<div class="search-results">
-<div class="has-results">
-
-<h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
-<ul class="search-results-list"></ul>
-
-</div> <!-- end of has-results -->
-<div class="no-results">
-
-<h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
-
-</div> <!-- end of no-results -->
-</div> <!-- end of search-results -->
-</div> <!-- end of book-search-results -->
-
-</div> <!-- end of page-inner -->
-</div> <!-- end of page-wrapper -->
-
-</div> <!-- end of body-inner -->
-
-</div> <!-- end of book-body -->
-<script src="../js/main.js"></script>
-<script src="../search/main.js"></script>
-<script src="../js/gitbook.min.js"></script>
-<script src="../js/theme.min.js"></script>
-</body>
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../archicture/" title="Архитектура" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Архитектура
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../oop/" title="ООП" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                ООП
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.a353778b.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
 </html>
