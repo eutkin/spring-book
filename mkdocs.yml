@@ -2,6 +2,7 @@ site_name: Spring Guide
 docs_dir: source
 site_dir: docs
 markdown_extensions:
+  - codehilite
   - pymdownx.details
   - toc:
       permalink: "#"
@@ -12,6 +13,7 @@ nav:
   - Введение : index.md
   - Архитектура : archicture.md
   - Архитектура. Практика: a1.md
+  - Разработка интерфейсов : interface.md
   - ООП : oop.md
   - Spring IoC: ioc.md
   - QA : qa.md
