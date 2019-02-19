@@ -230,14 +230,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" title="Декомпозиция" class="md-nav__link">
+  <a href="#_3" title="Трехслойная архитектура" class="md-nav__link">
+    Трехслойная архитектура
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" title="Декомпозиция" class="md-nav__link">
     Декомпозиция
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" title="Требования или немного лирики" class="md-nav__link">
+  <a href="#_5" title="Расширение функционала через композитные бины" class="md-nav__link">
+    Расширение функционала через композитные бины
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" title="Требования или немного лирики" class="md-nav__link">
     Требования или немного лирики
   </a>
   
@@ -330,14 +344,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" title="Декомпозиция" class="md-nav__link">
+  <a href="#_3" title="Трехслойная архитектура" class="md-nav__link">
+    Трехслойная архитектура
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" title="Декомпозиция" class="md-nav__link">
     Декомпозиция
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" title="Требования или немного лирики" class="md-nav__link">
+  <a href="#_5" title="Расширение функционала через композитные бины" class="md-nav__link">
+    Расширение функционала через композитные бины
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" title="Требования или немного лирики" class="md-nav__link">
     Требования или немного лирики
   </a>
   
@@ -364,19 +392,22 @@
 <h2 id="_2">Введение<a class="headerlink" href="#_2" title="Permanent link">#</a></h2>
 <p>Перед прочтением данной главы, ознакомьтесь с <a href="../archicture/">главой про архитектуру</a>, а также c
 <a href="../interface/">Пошаговым гайдом о разработке интерфейсов</a>.</p>
-<p>Здесь же, мы разберем на практике принципы и приемы по построению грамотного дизайна на примере нескольких систем.</p>
+<p>Здесь же мы разберем на практике принципы и приемы по построению грамотного дизайна на примере нескольких систем.</p>
 <p>Так как данная книга по спрингу, то и реализации у нас тоже будут на спринге. Но мы постараемся также рассмотреть 
 и аналоги (но не Java EE, от которой отказались даже родители)</p>
 <p>Рассмотрим такую систему:</p>
-<p>Система для расчета некоторых показателей по имеющимся данным в аналитических целях.   </p>
+<p>Система для расчета некоторых показателей по имеющимся данным в 
+аналитических целях.   </p>
 <p>Требования: </p>
 <ul>
 <li>
-<p>Система принимает на вход задание, в которой описано, что необходимо посчитать, за какой период и URL на 
+<p>Система принимает на вход задание через Web API, 
+в которой описано, что необходимо посчитать, за какой период и URL, на 
 который необходимо отправить результат расчета</p>
 </li>
 <li>
-<p>Задания должны быть привязаны к пользователю, которые их отправил, и храниться в каком-либо хранилище</p>
+<p>Задания должны быть привязаны к пользователю, которые их отправил, 
+и храниться в каком-либо хранилище</p>
 </li>
 <li>
 <p>После расчета на указанный в задаче URL должен быть отправлен результат задания</p>
@@ -385,13 +416,90 @@
 <p>Должна быть поддержка нескольких типов заданий</p>
 </li>
 </ul>
-<p>Все примеры кода можно будет посмотреть в проекте на <a href="https://github.com/eutkin/archicture">github</a>.</p>
-<h2 id="_3">Декомпозиция<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<h2 id="_3">Трехслойная архитектура<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
+<p>Большинство приложений (модулей) строятся по трехслойной архитектуре:</p>
+<p><img alt="3layer" src="../img/arch_pr2.png" /></p>
+<p>Иногда ее называют тортик-архитектура. Принципы:</p>
+<ul>
+<li>Приложение делится на 3 слоя</li>
+<li>Каждый слой должен зависеть только от слоя на один уровень ниже (но только строго на один уровень ниже, т.е. 
+<strong>Presentation Layer</strong> (servlet) зависит от <strong>Business Layer</strong>, но ничего знает про <strong>Data Access Layer</strong> (repository)).</li>
+<li>Каждый слой ничего не должен знать про слои выше.</li>
+</ul>
+<p>Виды слоев: </p>
+<ul>
+<li>
+<p><strong>Presentation Layer</strong> -- слой для взаимодействия с пользователем. Данный слой ответственнен прием и отдачу данных,
+их преобразование в термины вашей системы. Например, пользователь присылает вам запрос с json-сообщением, а слой 
+представления должен преобразовать этот запрос в объект <code>Task</code>. И наоборот, данный слой конвертирует сущности вашей
+системы в формат, удобный для пользователя (тот же самый json, html страничка и так далее.). </p>
+<details class="danger" open="open"><summary>Важно</summary><p>Слой представления не должен содержать в себе логики. Он отвечает только за конвертацию входных данных в термины
+вашей системы и наоборот. Любая логика запрещена. Это правило следует из принципа Единой ответственности.</p>
+</details>
+</li>
+<li>
+<p><strong>Business Layer</strong> -- слой бизнес-логики. Самый главный слой вашей системы. Инкапсулирует логику работы приложения. </p>
+</li>
+<li>
+<p><strong>Data Access Layer</strong> -- слой взаимодействия с хранилищем данных. Хранилищем данных может выступать не только СУБД,
+но и веб-сервисы, файлы. В этом слое реализованы атомарными операции с данными (CRUD). Если на Data Access Layer вам
+хочется сделать в одном методе несколько вызовов к бд, это означает, что вашему коду место на слой выше. </p>
+</li>
+</ul>
+<p>При проектировании информационной системы на первом этапе сосредоточится на слое бизнес-логике (Business Layer).</p>
+<h2 id="_4">Декомпозиция<a class="headerlink" href="#_4" title="Permanent link">#</a></h2>
 <p>Первым шагом при решении любой задачи является декомпозиция: разбиение большой задачи на задачи поменьше. </p>
 <p>Начнем с <a href="../archicture/#_5">иерархической декомпозиции</a>.</p>
-<p>Наша система должна считать задания и желательно давать 
-пользователю какую-либо обратную связь. Создадим интерфейс логики системы в целом:</p>
-<div class="codehilite"><pre><span></span><span class="cm">/**</span>
+<p>Наша система должен считать задания и отправлять результаты на URL, указанный в задании. Давайте порисуем в блокнотике:</p>
+<p><img alt="calc" src="../img/arch_pr3.png" /></p>
+<p>Так как мы принимаем запрос по http, а этот протокол подразумевает получение ответа на каждый запрос, 
+то нам пользователю необходимо отдать какой-либо ответ, например, задача принята на расчет или произошла ошибка.
+Поэтому немного модернизируем нашу схему:</p>
+<p><img alt="calc1" src="../img/arch_pr4.png" /></p>
+<p>Далее разобьем большой модуль <em>Calculator</em> на несколько модулей (задач) поменьше.  </p>
+<p>Для этого применим <a href="../archicture/#_6">функциональную декомпозицию</a>. </p>
+<p>Давайте определим независисые друг от друга задачи, которые должна выполнять система, исходя из требований:</p>
+<ul>
+<li>
+<p>Система должна хранить задания с привязкой к пользователю. </p>
+</li>
+<li>
+<p>Система должна рассчитывать задания</p>
+</li>
+<li>
+<p>Система должна отправлять результат задания на внешний сервис</p>
+</li>
+</ul>
+<p>Каждой задаче будет соответствовать свой модуль. Нарисуем новую схему: </p>
+<p><img alt="calc2" src="../img/arch_pr5.png" /></p>
+<p>Каждую такую задачу мы выделяем в отдельный модуль. В итоге, мы получаем следующие функциональные модули:</p>
+<ul>
+<li>
+<p>Модуль пред-обработки заданий (сохранение) (<strong>Task Pre-Handler</strong>)</p>
+</li>
+<li>
+<p>Модуль расчета заданий (<strong>TaskCalculator</strong>)</p>
+</li>
+<li>
+<p>Модуль обработки результата задания (<strong>ResultHandler</strong>)</p>
+</li>
+</ul>
+<p>А вот дальше уже проблема. Если три модуля выше были очевидны из требований, то как разбивать дальше уже плохо 
+понятно. В таком случае, что мы говорим дальнейшей декомпозиции? Не сегодня. И переходим к практике. </p>
+<details class="tip" open="open"><summary>Совет</summary><p>Если при декомпозиции вы не можете разбить задачу на более мелкие, оставьте ее единым целом. При написании 
+реализации появится ясность, как разбивать дальше.</p>
+</details>
+<p>Каждому модулю должен соответствовать интерфейс с описание входных и возвращаемых данных, ограничений, описания 
+возвращаемых значений, исключений и так далее. </p>
+<p>Модуль <em>Calculator</em> состоит из нескольких модулей поменьше. Вопрос в том, делать ли для него интерфейс? Да, так как
+это полноценный модуль, с входными-выходными данными. Это и есть паттерн <a href="../archicture/#_8">Фасад</a>.  </p>
+<p>Приступим к написанию интерфейса. Для этого вспомним нашу схему:</p>
+<p><img alt="calc1" src="../img/arch_pr4.png" /></p>
+<p>Как видно из схемы, мы принимаем Task, возвращаем Feedback. Связь с внешним сервисом у нас будет инкапсулирована
+внутри нашего модуль <em>Calculator</em>. Немного кода:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">org.springframework.lang.NonNull</span><span class="o">;</span>
+
+<span class="cm">/**</span>
 <span class="cm">* Калькулятор заданий в целом. Принимает задание на расчет </span>
 <span class="cm">* и отдает обратную связь (сообщение)</span>
 <span class="cm">*/</span>
@@ -402,34 +510,9 @@
 </pre></div>
 
 
-<p>Это будет главный интерфейс для доступа к нашей системе или, другими словами, <a href="../archicture/#_8">Фасад</a>. </p>
-<p>Теперь разобьем основную задачу на задачи поменьше. Для этого применим <a href="../archicture/#_6">функциональную декомпозицию</a>. </p>
-<p>Давайте определим независисые друг от друга задачи, которые должна выполнять система, исходя из требований:</p>
-<ul>
-<li>
-<p>Система должна принимать задания и где-то хранить их с привязкой к пользователю. Эти задачи стоят вместе, потому
-что отправлять на расчет необходимо уже сохраненное задание.   </p>
-</li>
-<li>
-<p>Система должна рассчитывать задания</p>
-</li>
-<li>
-<p>Система должна отправлять результат задания на внешний сервис</p>
-</li>
-</ul>
-<p>Каждую такую задачу мы выделяем в отдельный модуль. В итоге, мы получаем следующие функциональные модули:</p>
-<ul>
-<li>
-<p>Модуль пред-обработки заданий (сохранение)</p>
-</li>
-<li>
-<p>Модуль расчета заданий</p>
-</li>
-<li>
-<p>Модуль обработки результата задания</p>
-</li>
-</ul>
-<p>Для каждого модуля напишем интерфейс. </p>
+<p>Это будет главный интерфейс для доступа к нашей системе (не забываем, что это называется <a href="../archicture/#_8">Фасад</a>). </p>
+<p>Теперь опустимся на уровень ниже и напишем интерфейсы для модулей поменьше, согласно нашей схеме:</p>
+<p><img alt="calc2" src="../img/arch_pr5.png" /></p>
 <p>Получаем:</p>
 <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">org.springframework.lang.NonNull</span><span class="o">;</span>
 
@@ -455,11 +538,11 @@
 </pre></div>
 
 
-<div class="codehilite"><pre><span></span><span class="cm">/**</span>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">org.springframework.lang.NonNull</span><span class="o">;</span>
+
+<span class="cm">/**</span>
 <span class="cm">* Модуль расчета заданий</span>
 <span class="cm">*/</span>
-<span class="kn">import</span> <span class="nn">org.springframework.lang.NonNull</span><span class="o">;</span>
-
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">TaskCalculator</span> <span class="o">{</span>
 
     <span class="cm">/**</span>
@@ -493,10 +576,95 @@
 </pre></div>
 
 
-<p>Важно замечание. При проектировании системы, как может заметить внимательный читатель, мы не обращали внимание
+<details class="danger" open="open"><summary>Важно</summary><p>При проектировании системы, как может заметить внимательный читатель, мы не обращали внимание
 на структуру обрабатываемых данных. В интерфейсах выше пока стоят модели (Data Transfer Object или DTO) без какой-либо
 структуры, так как структура данных не играет роли. Структура данных влиет прежде всего на реализации. </p>
-<h2 id="_4">Требования или немного лирики<a class="headerlink" href="#_4" title="Permanent link">#</a></h2>
+</details>
+<p>Теперь мы можем написать реализацию для нашего калькулятора-фасада:</p>
+<div class="codehilite"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaskCalculatorFacadeImpl</span> <span class="kd">implements</span> <span class="n">TaskCalculatorFacade</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">TaskPreHandler</span> <span class="n">taskPreHandler</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">TaskCalculator</span> <span class="n">taskCalculator</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">ResultHandler</span> <span class="n">resultHandler</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">TaskCalculatorFacadeImpl</span><span class="o">(</span>
+            <span class="n">TaskPreHandler</span> <span class="n">taskPreHandler</span><span class="o">,</span>
+            <span class="n">TaskCalculator</span> <span class="n">taskCalculator</span><span class="o">,</span>
+            <span class="n">ResultHandler</span> <span class="n">resultHandler</span>
+    <span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taskPreHandler</span> <span class="o">=</span> <span class="n">taskPreHandler</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taskCalculator</span> <span class="o">=</span> <span class="n">taskCalculator</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">resultHandler</span> <span class="o">=</span> <span class="n">resultHandler</span><span class="o">;</span>
+    <span class="o">}</span>
+
+
+    <span class="kd">public</span> <span class="n">Feedback</span> <span class="nf">calculate</span><span class="o">(</span><span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+
+            <span class="n">Task</span> <span class="n">handledTask</span> <span class="o">=</span> <span class="n">taskPreHandler</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+            <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">taskCalculator</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="n">handledTask</span><span class="o">);</span>
+            <span class="n">ResultInfo</span> <span class="n">resultInfo</span> <span class="o">=</span> <span class="n">resultHandler</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="n">result</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">Feedback</span><span class="o">.</span><span class="na">fromResult</span><span class="o">(</span><span class="n">resultInfo</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">CalculateException</span> <span class="o">|</span> <span class="n">TaskHandleException</span> <span class="o">|</span> <span class="n">ResultHandleException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">Feedback</span><span class="o">.</span><span class="na">fromThrowable</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Остается написать реализацию для оставшихся интерфейсов.</p>
+<p>Прикручиваем <strong>Presentation Layer</strong> :</p>
+<div class="codehilite"><pre><span></span><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&quot;/task&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaskController</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">TaskCalculatorFacade</span> <span class="n">calculator</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">TaskController</span><span class="o">(</span><span class="n">TaskCalculatorFacade</span> <span class="n">calculator</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">calculator</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">calculator</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Spring MVC сам преобразует json сообщение в DTO и обратно</span>
+    <span class="nd">@PostMapping</span>
+    <span class="kd">public</span> <span class="n">ResponseEntity</span><span class="o">&lt;</span><span class="n">Feedback</span><span class="o">&gt;</span> <span class="nf">sendTask</span><span class="o">(</span><span class="nd">@RequestBody</span> <span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Feedback</span> <span class="n">feedback</span> <span class="o">=</span> <span class="n">calculator</span><span class="o">.</span><span class="na">calculate</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+        <span class="c1">// по хорошему для разных фидбэков нужен разный стастус, </span>
+        <span class="c1">// но для простоты пока пусть будет так</span>
+        <span class="k">return</span> <span class="n">ResponseEntity</span><span class="o">.</span><span class="na">ok</span><span class="o">(</span><span class="n">feedback</span><span class="o">);</span> 
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>И напишем пример использования <strong>Data Access Layer</strong> в реализации <code>TaskPreHandler</code>:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaskSaver</span> <span class="kd">implements</span> <span class="n">TaskPreHandler</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">TaskRepository</span> <span class="n">taskRepository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">TaskSaver</span><span class="o">(</span><span class="n">TaskRepository</span> <span class="n">taskRepository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taskRepository</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">taskRepository</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@NonNull</span>
+    <span class="kd">public</span> <span class="n">Task</span> <span class="nf">handle</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TaskHandleException</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">taskRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">PersistenceException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">TaskHandleException</span><span class="o">(</span><span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Все примеры кода можно будет посмотреть в проекте на <a href="https://github.com/eutkin/archicture">github</a>. </p>
+<h2 id="_5">Расширение функционала через композитные бины<a class="headerlink" href="#_5" title="Permanent link">#</a></h2>
+<p>Через какое-то время     </p>
+<h2 id="_6">Требования или немного лирики<a class="headerlink" href="#_6" title="Permanent link">#</a></h2>
 <p>Требования -- это головная боль разработчика. Почему? Потому что явление, когда кто-то может внятно и подробно объяснить,
 что он, собственно, от вас хочет, довольно редкое. </p>
 <p>Как в теории:</p>
