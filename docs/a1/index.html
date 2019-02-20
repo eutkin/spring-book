@@ -395,9 +395,11 @@
 <p>Здесь же мы разберем на практике принципы и приемы по построению грамотного дизайна на примере нескольких систем.</p>
 <p>Так как данная книга по спрингу, то и реализации у нас тоже будут на спринге. Но мы постараемся также рассмотреть 
 и аналоги (но не Java EE, от которой отказались даже родители)</p>
-<p>Рассмотрим такую систему:</p>
-<p>Система для расчета некоторых показателей по имеющимся данным в 
-аналитических целях.   </p>
+<p>Рассмотрим такую задачу:</p>
+<p>Есть большой объем данных по продажам мобильных устройств в Китае, который хранится  в колоночкой базе данных 
+с поддержкой SQL`92. Нашим клиентам хотелось бы получать различные статистики по продажам, например, количество
+проданных телефонов определенной марки (например, Huawei) или отношение проданных телефонов с вырезом на экране 
+к телефонам без выреза в %. </p>
 <p>Требования: </p>
 <ul>
 <li>
@@ -520,6 +522,8 @@
 <span class="cm">* Модуль пред-обработки заданий (сохранение)</span>
 <span class="cm">* </span>
 <span class="cm">*/</span>
+<span class="nd">@FunctionalInterface</span> <span class="c1">// контроллирует, что интерфейс имеет только один недефолтный метод. </span>
+<span class="c1">// Это небходимо, чтобы мы могли писать реализации интерфейсы в виде лямбды </span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">TaskPreHandler</span> <span class="o">{</span>
 
     <span class="cm">/**</span>
@@ -543,6 +547,7 @@
 <span class="cm">/**</span>
 <span class="cm">* Модуль расчета заданий</span>
 <span class="cm">*/</span>
+<span class="nd">@FunctionalInterface</span> 
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">TaskCalculator</span> <span class="o">{</span>
 
     <span class="cm">/**</span>
@@ -562,6 +567,7 @@
 <span class="cm">/**</span>
 <span class="cm">* Модуль обработки результата задания</span>
 <span class="cm">*/</span>
+<span class="nd">@FunctionalInterface</span> 
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ResultHandler</span> <span class="o">{</span>
 
     <span class="cm">/**</span>
@@ -580,7 +586,31 @@
 на структуру обрабатываемых данных. В интерфейсах выше пока стоят модели (Data Transfer Object или DTO) без какой-либо
 структуры, так как структура данных не играет роли. Структура данных влиет прежде всего на реализации. </p>
 </details>
-<p>Теперь мы можем написать реализацию для нашего калькулятора-фасада:</p>
+<p>Напишем для примера реализацию <code>TaskPreHandler</code> с использованием <strong>Data Access Layer</strong>:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@Service</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaskSaver</span> <span class="kd">implements</span> <span class="n">TaskPreHandler</span> <span class="o">{</span>
+
+    <span class="c1">// это интерфейс из Data Access Layer</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">TaskRepository</span> <span class="n">taskRepository</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">TaskSaver</span><span class="o">(</span><span class="n">TaskRepository</span> <span class="n">taskRepository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taskRepository</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">taskRepository</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@NonNull</span>
+    <span class="kd">public</span> <span class="n">Task</span> <span class="nf">handle</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TaskHandleException</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">taskRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">PersistenceException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">TaskHandleException</span><span class="o">(</span><span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>После декомпозиции большого модуля, мы можем написать реализацию для его интерфейса. которая объединит через композицию
+модули поменьше:</p>
 <div class="codehilite"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaskCalculatorFacadeImpl</span> <span class="kd">implements</span> <span class="n">TaskCalculatorFacade</span> <span class="o">{</span>
 
     <span class="kd">private</span> <span class="kd">final</span> <span class="n">TaskPreHandler</span> <span class="n">taskPreHandler</span><span class="o">;</span>
@@ -594,11 +624,10 @@
             <span class="n">TaskCalculator</span> <span class="n">taskCalculator</span><span class="o">,</span>
             <span class="n">ResultHandler</span> <span class="n">resultHandler</span>
     <span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">taskPreHandler</span> <span class="o">=</span> <span class="n">taskPreHandler</span><span class="o">;</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">taskCalculator</span> <span class="o">=</span> <span class="n">taskCalculator</span><span class="o">;</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">resultHandler</span> <span class="o">=</span> <span class="n">resultHandler</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taskPreHandler</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">taskPreHandler</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">taskCalculator</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">taskCalculator</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">resultHandler</span> <span class="o">=</span>  <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">resultHandler</span><span class="o">);</span>
     <span class="o">}</span>
-
 
     <span class="kd">public</span> <span class="n">Feedback</span> <span class="nf">calculate</span><span class="o">(</span><span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
@@ -615,8 +644,74 @@
 </pre></div>
 
 
-<p>Остается написать реализацию для оставшихся интерфейсов.</p>
-<p>Прикручиваем <strong>Presentation Layer</strong> :</p>
+<p>Далее пишем реализации для оставшихся интерфейсов. </p>
+<p>В качестве примера дальнейшей декомпозиции возьмем <code>TaskCalculator</code>. И идем известным путем. У нас есть большая 
+задача (расчет заданий), которую надо разбить на несколько маленьких. Начинаем снова рассуждать. </p>
+<p>Данные по продажам лежат в базе с поддержкой SQL. Значит получать выборку для расчета или уже готовые значения
+мы можем через SQL. </p>
+<p>Попытаемся разобраться, что нам будет необходимо для реализации калькулятора:</p>
+<ul>
+<li>SQL Query Generator. Модуль, который будет генерировать sql запрос на основе задания (<code>Task</code>)</li>
+<li>SQL Executor. Модуль, который будет выполнять sql запрос и возвращать нам какие-то данные (либо выборку, либо 
+рассчитанные значения).   </li>
+<li>SQL ResultSet Handler. Модуль обработки результа запроса</li>
+</ul>
+<p>Продолжаем рисовать и дополняем нашу схему:</p>
+<p><img alt="calc6" src="../img/arch_pr6.png" /></p>
+<p>Набросаем интерфейсы:</p>
+<div class="codehilite"><pre><span></span><span class="cm">/**</span>
+<span class="cm">* Модуль, который будет генерировать sql запрос на основе задания (`Task`)</span>
+<span class="cm">*/</span>
+<span class="nd">@FunctionalInterface</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">SqlQueryGenerator</span> <span class="o">{</span>
+
+    <span class="cm">/**</span>
+<span class="cm">    * Генерирует sql запрос для задания</span>
+<span class="cm">    * @param task задание</span>
+<span class="cm">    * @return sql запрос</span>
+<span class="cm">    * @throws QueryGenerateException если для задания невозможно сгенерировать валидный sql запрос</span>
+<span class="cm">    */</span>
+    <span class="nd">@NonNull</span>
+    <span class="n">String</span> <span class="nf">generate</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">QueryGenerateException</span><span class="o">;</span>
+<span class="o">}</span> 
+</pre></div>
+
+
+<p>Для простоты интерфейсы остальных модулей опустим.</p>
+<p>Пишем реализацию для <code>TaskCalculator</code>:</p>
+<div class="codehilite"><pre><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SqlTaskCalculator</span> <span class="kd">implements</span> <span class="n">TaskCalculator</span> <span class="o">{</span>
+
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">SqlQueryGenerator</span> <span class="n">sqlQueryGenerator</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">SqlExecutor</span> <span class="n">sqlExecutor</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">SqlResultSetHandler</span> <span class="n">resultSetHandler</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">SqlTaskCalculator</span><span class="o">(</span>
+                <span class="n">SqlQueryGenerator</span> <span class="n">sqlQueryGenerator</span><span class="o">,</span>
+                <span class="n">SqlExecutor</span> <span class="n">sqlExecutor</span><span class="o">,</span>
+                <span class="n">SqlResultSetHandler</span> <span class="n">resultSetHandler</span>
+    <span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sqlQueryGenerator</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">sqlQueryGenerator</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">sqlExecutor</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">sqlExecutor</span><span class="o">);</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">resultSetHandler</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">resultSetHandler</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@NonNull</span>
+    <span class="kd">public</span> <span class="n">Result</span> <span class="nf">calculate</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">CalculateException</span> <span class="o">{</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="n">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="n">sqlQueryGenerator</span><span class="o">.</span><span class="na">generate</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
+            <span class="n">SqlResultSet</span> <span class="n">resultSet</span> <span class="o">=</span> <span class="n">sqlExecutor</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">Result</span> <span class="n">result</span> <span class="o">=</span> <span class="n">resultSetHandler</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="n">resultSet</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">QueryGenerateException</span> <span class="cm">/* | Исключения других интерфейсов */</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">throw</span> <span class="k">new</span> <span class="n">CalculateExecption</span><span class="o">(</span><span class="n">ex</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span> 
+<span class="o">}</span>
+</pre></div>
+
+
+<p>И так шаг за шагом доводим систему до готовности.</p>
+<p>После того, как мы закончили со слоем бизнес-логики, то прикручиваем остальные слои:</p>
+<p><strong>Presentation Layer</strong> :</p>
 <div class="codehilite"><pre><span></span><span class="nd">@Controller</span>
 <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&quot;/task&quot;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaskController</span> <span class="o">{</span>
@@ -639,31 +734,56 @@
 </pre></div>
 
 
-<p>И напишем пример использования <strong>Data Access Layer</strong> в реализации <code>TaskPreHandler</code>:</p>
+<h2 id="_5">Расширение функционала через композитные бины<a class="headerlink" href="#_5" title="Permanent link">#</a></h2>
+<p>Для мониторинга калькулятора неплохо было бы добавить метрику, которая учитывала бы количество поступивших заданий. 
+Возникает вопрос, как добавить такой функционал в существующую систему. Как мы помним, нам нельзя менять существующий
+код (прицип <strong>Open-Close</strong> или принцип <strong>Открытости-Закрытости</strong>). Поэтому воспользуемся таким паттерном как 
+<a href="https://refactoring.guru/ru/design-patterns/chain-of-responsibility">Chain of Responsibility</a>. Он же композитный бин,
+так как внутри состоит из нескольких бинов.</p>
+<div class="codehilite"><pre><span></span><span class="nd">@Configuration</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SomeConfiguration</span> <span class="o">{</span>
+
+   <span class="nd">@Bean</span>
+   <span class="nd">@Primary</span> <span class="c1">// это аннотация означает, что если есть несколько бинов, реализаций одного интерфейса, </span>
+   <span class="c1">// то при использовании @Autowired будет внедрен бин, помечененный аннотацией @Primary.</span>
+   <span class="kd">public</span> <span class="n">TaskPreHandler</span> <span class="nf">compositeTaskPreHandler</span><span class="o">(</span>
+           <span class="nd">@Autowired</span><span class="o">(</span><span class="n">required</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">TaskPreHandler</span><span class="o">&gt;</span> <span class="n">handlers</span>
+   <span class="o">)</span> <span class="o">{</span>
+       <span class="n">Stream</span><span class="o">&lt;</span><span class="n">TaskPreHandler</span><span class="o">&gt;</span> <span class="n">handlerStream</span> <span class="o">=</span> <span class="n">handlers</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> 
+                       <span class="n">Stream</span><span class="o">.</span><span class="na">empty</span><span class="o">()</span> <span class="o">:</span> <span class="n">handlers</span><span class="o">.</span><span class="na">stream</span><span class="o">();</span>
+       <span class="n">BinaryOperator</span><span class="o">&lt;</span><span class="n">TaskPreHandler</span><span class="o">&gt;</span> <span class="n">operator</span> <span class="o">=</span> <span class="o">(</span><span class="n">handler</span><span class="o">,</span> <span class="n">nextHandler</span><span class="o">)</span> <span class="o">-&gt;</span> 
+               <span class="n">task</span> <span class="o">-&gt;</span> <span class="n">nextHandler</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="n">handler</span><span class="o">.</span><span class="na">handle</span><span class="o">(</span><span class="n">task</span><span class="o">));</span>
+       <span class="c1">// сложный кусок. Здесь мы все обработчики объединяем в </span>
+       <span class="c1">// одну длинную последовательную цепочку.      </span>
+       <span class="k">this</span><span class="o">.</span><span class="na">delegate</span> <span class="o">=</span> <span class="n">handlerStream</span>
+               <span class="o">.</span><span class="na">reduce</span><span class="o">(</span><span class="n">task</span> <span class="o">-&gt;</span> <span class="n">task</span><span class="o">,</span> <span class="n">operator</span><span class="o">);</span>
+   <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Теперь для добавления нового обработчика для мониторинга, мы просто создаем еще один бин:</p>
 <div class="codehilite"><pre><span></span><span class="nd">@Component</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">TaskSaver</span> <span class="kd">implements</span> <span class="n">TaskPreHandler</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MonitoringTaskCounter</span> <span class="kd">implements</span> <span class="n">TaskPreHandler</span> <span class="o">{</span>
 
-    <span class="kd">private</span> <span class="kd">final</span> <span class="n">TaskRepository</span> <span class="n">taskRepository</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="n">CounterService</span> <span class="n">counterService</span><span class="o">;</span>
 
-    <span class="kd">public</span> <span class="nf">TaskSaver</span><span class="o">(</span><span class="n">TaskRepository</span> <span class="n">taskRepository</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">taskRepository</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">taskRepository</span><span class="o">);</span>
+    <span class="kd">public</span> <span class="nf">MonitoringTaskCounter</span><span class="o">(</span><span class="n">CounterService</span> <span class="n">counterService</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">counterService</span> <span class="o">=</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">counterService</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="nd">@NonNull</span>
     <span class="kd">public</span> <span class="n">Task</span> <span class="nf">handle</span><span class="o">(</span><span class="nd">@NonNull</span> <span class="n">Task</span> <span class="n">task</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">TaskHandleException</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="n">taskRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">task</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">PersistenceException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="n">TaskHandleException</span><span class="o">(</span><span class="n">ex</span><span class="o">);</span>
-        <span class="o">}</span>
+        <span class="n">counterService</span><span class="o">.</span><span class="na">increment</span><span class="o">(</span><span class="s">&quot;counter.task.input&quot;</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">task</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </pre></div>
 
 
-<p>Все примеры кода можно будет посмотреть в проекте на <a href="https://github.com/eutkin/archicture">github</a>. </p>
-<h2 id="_5">Расширение функционала через композитные бины<a class="headerlink" href="#_5" title="Permanent link">#</a></h2>
-<p>Через какое-то время     </p>
+<p>В итоге, сначала будет выполнен TaskSaver, а затем MonitoringTaskCounter. Или наоборот, так как порядок мы не задали.
+Порядок выполнения можно задать через аннотацию @Order/интерфейс PriorityOrdered | Ordered. </p>
+<p>Тоже самое можно применить и для <code>ResultHandler</code>, если нам понадобится больше обработок. </p>
 <h2 id="_6">Требования или немного лирики<a class="headerlink" href="#_6" title="Permanent link">#</a></h2>
 <p>Требования -- это головная боль разработчика. Почему? Потому что явление, когда кто-то может внятно и подробно объяснить,
 что он, собственно, от вас хочет, довольно редкое. </p>
