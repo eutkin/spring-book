@@ -11,7 +11,8 @@ theme:
   name: material
 nav:
   - Введение : index.md
-  - Архитектура : archicture.md
+  - Архитектура. Часть 1: archicture.md
+  - Архитектура. Часть 2: archicture2.md
   - Архитектура. Практика: a1.md
   - Разработка интерфейсов : interface.md
   - ООП : oop.md
