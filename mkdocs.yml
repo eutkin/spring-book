@@ -14,6 +14,7 @@ nav:
   - Архитектура. Часть 1: archicture.md
   - Архитектура. Часть 2: archicture2.md
   - Архитектура. Практика: a1.md
+  - CRUD & Spring: spring-crud.md
   - Разработка интерфейсов : interface.md
   - ООП : oop.md
   - Spring IoC: ioc.md
