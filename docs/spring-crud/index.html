@@ -274,6 +274,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#spring-security" title="Прикручиваем Spring Security" class="md-nav__link">
+    Прикручиваем Spring Security
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-" title="Бизнес-логика и всё остальное" class="md-nav__link">
+    Бизнес-логика и всё остальное
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-_1" title="Способы реализации ввода-вывода или нужно ли плодить модели?" class="md-nav__link">
+    Способы реализации ввода-вывода или нужно ли плодить модели?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-_2" title="Алгоритм написания бизнес-логики и около того" class="md-nav__link">
+    Алгоритм написания бизнес-логики и около того
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -378,6 +412,40 @@
   <a href="#_3" title="Создание моделей" class="md-nav__link">
     Создание моделей
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spring-security" title="Прикручиваем Spring Security" class="md-nav__link">
+    Прикручиваем Spring Security
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-" title="Бизнес-логика и всё остальное" class="md-nav__link">
+    Бизнес-логика и всё остальное
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#-_1" title="Способы реализации ввода-вывода или нужно ли плодить модели?" class="md-nav__link">
+    Способы реализации ввода-вывода или нужно ли плодить модели?
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#-_2" title="Алгоритм написания бизнес-логики и около того" class="md-nav__link">
+    Алгоритм написания бизнес-логики и около того
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -525,7 +593,7 @@ io.github.&lt;ваш ник на гитхабе в нижнем регистре
 <p><img alt="er" src="../img/arch_pr8.png" />                    </p>
 <p>И напишем ddl скрипт, который будет задавать структуру базы данных. Используем синтаксис postgres'a, так как
 в бою будет он. Чтобы H2 мог разобрать с диалектом postgres'a, добавляем в url параметр <code>MODE=PostgreSQL</code>.</p>
-<p>Модифицируем <code>application.properties</code>:</p>
+<p>Модифицируем <code>application-dev.properties</code>:</p>
 <div class="codehilite"><pre><span></span><span class="c"># показываем генерируемый хибернейтом sql</span>
 <span class="na">spring.jpa.show-sql</span><span class="o">=</span><span class="s">true\</span>
 
@@ -606,24 +674,111 @@ io.github.&lt;ваш ник на гитхабе в нижнем регистре
 
 
 <h2 id="_3">Создание моделей<a class="headerlink" href="#_3" title="Permanent link">#</a></h2>
-<p>Модели можно сгенерировать либо таблицам в базе (способ поищите сами, их много), либо написать руками.</p>
-<p>Код моделей можете посмотреть на гитхабе, на примере разберем только одну. </p>
+<p>Модели можно сгенерировать либо по таблицам в базе (способ поищите сами, их много), либо написать руками.</p>
+<p>Код моделей можете посмотреть на гитхабе, на примере разберем только несколько.</p>
+<p>Пользователь: </p>
+<div class="codehilite"><pre><span></span><span class="nd">@Entity</span>
+<span class="nd">@Table</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;users&quot;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="kd">implements</span> <span class="n">UserDetails</span> <span class="o">{</span> <span class="c1">// А вот это интерфейс Spring Security, </span>
+    <span class="c1">// маркер того, что класс хранит  информацию о пользователе</span>
+
+    <span class="nd">@Id</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">login</span><span class="o">;</span>
+
+    <span class="c1">// На самом деле здесь не хранятся пароли. Здесь хранится его хэш.</span>
+    <span class="c1">// Это необходимо для того, чтобы не хранить пароли в базе в открытом виде.</span>
+    <span class="c1">// Работает это довольно просто. Нам извне приходит пароль (при логине пользователя)</span>
+    <span class="c1">// Внешний пароль мы хэшируем и проверяем, совпадает ли он с хэшом из базы. </span>
+    <span class="c1">// Так как для одинаковых паролей хэш будет одинаков, то все ок</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">password</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">displayName</span><span class="o">;</span>
+
+    <span class="nd">@ManyToMany</span><span class="o">(</span><span class="n">cascade</span> <span class="o">=</span> <span class="n">ALL</span><span class="o">,</span> <span class="n">mappedBy</span> <span class="o">=</span> <span class="s">&quot;users&quot;</span><span class="o">,</span> <span class="n">fetch</span> <span class="o">=</span> <span class="n">EAGER</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Booklist</span><span class="o">&gt;</span> <span class="n">booklists</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashSet</span><span class="o">&lt;&gt;();</span>
+
+    <span class="c1">// Здесь хранятся роли пользователя, админ там, секретарша или типа того</span>
+    <span class="c1">// Но у нас будет только одна роль, поэтому в базе мы ее не храним и забиваем </span>
+    <span class="c1">// гвоздями. Не забудь только про ROLE_, без него не будет работать. </span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">Collection</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">GrantedAuthority</span><span class="o">&gt;</span> <span class="nf">getAuthorities</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">Collections</span><span class="o">.</span><span class="na">singleton</span><span class="o">(</span><span class="k">new</span> <span class="n">SimpleGrantedAuthority</span><span class="o">(</span><span class="s">&quot;ROLE_USER&quot;</span><span class="o">));</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getPassword</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">password</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getUsername</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">login</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Ниже идет всякая фигня, если мы как-то хотим забанить пользователя</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isAccountNonExpired</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isAccountNonLocked</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isCredentialsNonExpired</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isEnabled</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">User</span> <span class="nf">addBooklist</span><span class="o">(</span><span class="n">Booklist</span> <span class="n">booklist</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">booklists</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">booklist</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="k">this</span> <span class="o">==</span> <span class="n">o</span><span class="o">)</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">o</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">getClass</span><span class="o">()</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="na">getClass</span><span class="o">())</span> <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="n">User</span> <span class="n">user</span> <span class="o">=</span> <span class="o">(</span><span class="n">User</span><span class="o">)</span> <span class="n">o</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">login</span><span class="o">,</span> <span class="n">user</span><span class="o">.</span><span class="na">login</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">hash</span><span class="o">(</span><span class="n">login</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Геттеры &amp; Сеттеры</span>
+<span class="o">}</span>    
+</pre></div>
+
+
+<p>Список книг:</p>
 <div class="codehilite"><pre><span></span><span class="nd">@Entity</span>  <span class="c1">// Обязательная аннотация-маркер, что dto является сущностью</span>
 <span class="nd">@Table</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;booklists&quot;</span><span class="o">)</span> <span class="c1">// аннотация для указания имени таблицы и схемы</span>
-<span class="nd">@Getter</span> <span class="c1">// ломбоковские аннотации, которые генерят геттеры и сеттеры</span>
-<span class="nd">@Setter</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Booklist</span> <span class="o">{</span>
 
     <span class="nd">@Id</span> <span class="c1">//обязательная аннотация для поля-первичного ключа</span>
-    <span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">generator</span> <span class="o">=</span> <span class="s">&quot;org.hibernate.id.UUIDGenerator&quot;</span><span class="o">)</span> <span class="c1">//генерирует uuid автоматически при сохранении в бд</span>
-    <span class="nd">@Column</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;booklist_id&quot;</span><span class="o">)</span> <span class="c1">//аннотация для указания параметров маппинга и генерации схемы</span>
+    <span class="nd">@GeneratedValue</span><span class="o">(</span><span class="n">generator</span> <span class="o">=</span> <span class="s">&quot;uuid&quot;</span><span class="o">)</span>
+    <span class="nd">@GenericGenerator</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;uuid&quot;</span><span class="o">,</span> <span class="n">strategy</span> <span class="o">=</span> <span class="s">&quot;uuid&quot;</span><span class="o">)</span> <span class="c1">//генерирует uuid автоматически </span>
+                                                        <span class="c1">// при сохранении в бд</span>
+    <span class="nd">@Column</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;booklist_id&quot;</span><span class="o">)</span> <span class="c1">//аннотация для указания </span>
+                                  <span class="c1">// параметров маппинга и генерации схемы</span>
     <span class="kd">private</span> <span class="n">UUID</span> <span class="n">id</span><span class="o">;</span>
 
     <span class="c1">// не является обязательной, имя поля по умолчанию выступает как имя столбца</span>
     <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
 
-    <span class="nd">@ManyToOne</span> <span class="c1">// аннотация для связи Много-к-Одному. У нескольких буклистов может быть только один автор</span>
-    <span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;author&quot;</span><span class="o">)</span> <span class="c1">// имя стоблца, по которому можно сделать join для получения информации об авторе</span>
+    <span class="nd">@ManyToOne</span> <span class="c1">// аннотация для связи Много-к-Одному. </span>
+               <span class="c1">// У нескольких буклистов может быть только один автор</span>
+    <span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;author&quot;</span><span class="o">)</span> <span class="c1">// имя стоблца, по которому можно сделать </span>
+                                <span class="c1">// join для получения информации об авторе</span>
     <span class="kd">private</span> <span class="n">User</span> <span class="n">author</span><span class="o">;</span>
 
     <span class="nd">@ManyToMany</span> <span class="c1">// связь много-ко многим</span>
@@ -639,11 +794,213 @@ io.github.&lt;ваш ник на гитхабе в нижнем регистре
         <span class="n">inverseJoinColumns</span> <span class="o">=</span> <span class="nd">@JoinColumn</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;book_id&quot;</span><span class="o">))</span>
     <span class="kd">private</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">Book</span><span class="o">&gt;</span> <span class="n">books</span><span class="o">;</span>
 
+    <span class="c1">// Геттеры &amp; Сеттеры</span>
+
 <span class="o">}</span>
 </pre></div>
 
 
-<p>Надо еще бы указать <code>equals</code> и <code>hashCode</code> но сделаем это позже.       </p>
+<p>Надо еще бы указать <code>equals</code> и <code>hashCode</code>, но сделаем это позже.</p>
+<details open="open"><summary>Немного про lombok</summary><p>Многие любят использовать lombok при написания моделей. Я этого делать не советую по некоторым причинам:</p>
+<ul>
+<li>В сущностях и так слишком много аннотаций. Серьезно, только над самим классом уже две. А хотелось бы добавить
+<code>@Data</code>, <code>@Accessor(chain = true)</code> (позволяет сеттить значения полей более удобно). Но в итоге весь класс
+оказывается увешан аннотациями так, что даже кода под ним не видно.</li>
+<li>С аннотацией <code>@Data</code> тоже не все однозначно. Допустим у нам обычная bi-direction связь, например, книга
+ссылается на издателя, а издатель на свои книги. Если мы повесим эту аннотацию на класс книги и издателя, то после
+вызова equals &amp; hashcode приложение уйдет в бесконечный цикл. Это происходит, потому что equals &amp; hashcode 
+генерируются для всех полей. То есть у издателя тоже будет вызван метод equals &amp; hashcode, так как он является
+полем книги, а в нем  есть поле с книгами, у которых этим методы тоже будут вызваны и так до бесконечности.
+Чтобы этого избежать, можно повесить аннотацию <code>@EqualsAndHashCode(exclude = {"books"}</code>, а это опять + 1
+аннотация. </li>
+</ul>
+<p>Исходя из озвученных причин я советую избегать использования lombok'a в сущностях</p>
+</details>
+<h2 id="spring-security">Прикручиваем Spring Security<a class="headerlink" href="#spring-security" title="Permanent link">#</a></h2>
+<p>Если подключить зависимость </p>
+<div class="codehilite"><pre><span></span> <span class="nt">&lt;dependency&gt;</span>        
+    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>           
+    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-security<span class="nt">&lt;/artifactId&gt;</span>           
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></div>
+
+
+<p>то Spring позаботится о защищенности вашего предложения и создаст конфигурацию по умолчанию с пользователем <code>User</code>
+и случайно сгенерированным паролем. </p>
+<p>Чтобы настроить Spring Security по-человечески надо уже писать собственную конфигурацию. Часть работы мы уже сделали,
+создали собственную модельку для пользователя. Теперь настроим все по красоте:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@Configuration</span>
+<span class="nd">@Profile</span><span class="o">(</span><span class="s">&quot;dev&quot;</span><span class="o">)</span> <span class="c1">// конфиг будет работать, только если приложение запустить </span>
+<span class="c1">// под профилем &quot;dev&quot;, потому что мы здесь отключим некоторые политики </span>
+<span class="c1">// безопасности, чтобы была возможность проверить</span>
+<span class="c1">// работу приложения, пощупать руками, так сказать</span>
+<span class="nd">@EnableWebSecurity</span> <span class="c1">// аннотация, чтобы включить security и наследуемся </span>
+                   <span class="c1">// от адаптера-конфигуратора</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SecurityConfiguration</span> <span class="kd">extends</span> <span class="n">WebSecurityConfigurerAdapter</span> <span class="o">{</span>
+
+    <span class="c1">// Это интерфейс модуля, задача которого вытащить пользователя из хранилища</span>
+    <span class="c1">// В нашем случае, вытащить из базы. Мы сейчас доделаем конфиг </span>
+    <span class="c1">// и напишем ему реализацию</span>
+    <span class="kd">private</span> <span class="n">UserDetailsService</span> <span class="n">userRepository</span><span class="o">;</span>
+
+    <span class="c1">// Это бин, который хэширует пароли. Для чего это нужно, я писал выше</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="n">PasswordEncoder</span> <span class="nf">bcrypt</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">BCryptPasswordEncoder</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Здесь конфигурируем менеджера аутентификацим</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">AuthenticationManagerBuilder</span> <span class="n">auth</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">auth</span><span class="o">.</span><span class="na">userDetailsService</span><span class="o">(</span><span class="n">userRepository</span><span class="o">).</span><span class="na">passwordEncoder</span><span class="o">(</span><span class="n">bcrypt</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="c1">// Здесь производится основная настройка</span>
+    <span class="nd">@Override</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">HttpSecurity</span> <span class="n">http</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">http</span>
+        <span class="c1">// включаем basic auth. Это самый простой способ, </span>
+        <span class="c1">// но для его использования </span>
+        <span class="c1">// рекомендуется иметь https</span>
+        <span class="o">.</span><span class="na">httpBasic</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">and</span><span class="o">()</span>
+        <span class="c1">// Мы же пишем REST, а ему сессия не нужна. Отключаем ее создание</span>
+        <span class="o">.</span><span class="na">sessionManagement</span><span class="o">().</span><span class="na">sessionCreationPolicy</span><span class="o">(</span><span class="n">STATELESS</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">and</span><span class="o">()</span>
+        <span class="c1">// Сross Site Request Forgery - техника подмены запроса между сайтами</span>
+        <span class="c1">// Я рак, я ей пользоваться не умею. Если ваш сервис использует </span>
+        <span class="c1">// шаблонизатор и вы возвращаете или</span>
+        <span class="c1">// получаете запросы с html страничек, то отключать его не надо. </span>
+        <span class="c1">// В том числе и на проде.</span>
+        <span class="c1">// А если вы через Postman хотите потыкать в свое API, </span>
+        <span class="c1">// то можете отключать</span>
+        <span class="o">.</span><span class="na">csrf</span><span class="o">().</span><span class="na">disable</span><span class="o">()</span>
+        <span class="c1">// Отключаем заголовок, который контроллирует наличие https, </span>
+        <span class="c1">// так как у нас его нет и заголовок</span>
+        <span class="c1">// в Postman мне ставить лень</span>
+        <span class="c1">// Конечно, отключать это не следует, но пока идет разработка, </span>
+        <span class="c1">// то лучше отключить,</span>
+        <span class="c1">// иначе сервис будет плеваться 403 статусами и не давать работать</span>
+        <span class="o">.</span><span class="na">headers</span><span class="o">().</span><span class="na">httpStrictTransportSecurity</span><span class="o">().</span><span class="na">disable</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">and</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">authorizeRequests</span><span class="o">()</span>
+        <span class="c1">// контроллирует, что для работы с API нужно авторизоваться </span>
+        <span class="c1">// под ролью USER</span>
+        <span class="o">.</span><span class="na">antMatchers</span><span class="o">(</span><span class="s">&quot;/api/**&quot;</span><span class="o">).</span><span class="na">hasRole</span><span class="o">(</span><span class="s">&quot;USER&quot;</span><span class="o">)</span>
+        <span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// У нас есть h2 консоль для дебага, давайте отключим там security вообще</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">configure</span><span class="o">(</span><span class="n">WebSecurity</span> <span class="n">web</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+        <span class="n">web</span><span class="o">.</span><span class="na">ignoring</span><span class="o">().</span><span class="na">antMatchers</span><span class="o">(</span><span class="s">&quot;/h2-console/**&quot;</span><span class="o">);</span>
+    <span class="o">}</span>
+
+
+    <span class="nd">@Autowired</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setUserRepository</span><span class="o">(</span><span class="n">UserDetailsService</span> <span class="n">userRepository</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">userRepository</span> <span class="o">=</span> <span class="n">requireNonNull</span><span class="o">(</span><span class="n">userRepository</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Наша конфигурация требует <code>UserDetailsService</code>, напишем реализацию поверх репозитория Spring Data Jpa:</p>
+<div class="codehilite"><pre><span></span><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">UserRepository</span> 
+                <span class="kd">extends</span> <span class="n">UserDetailsService</span><span class="o">,</span> <span class="n">JpaRepository</span><span class="o">&lt;</span><span class="n">User</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="k">default</span> <span class="n">UserDetails</span> <span class="nf">loadUserByUsername</span><span class="o">(</span><span class="n">String</span> <span class="n">username</span><span class="o">)</span> 
+                    <span class="kd">throws</span> <span class="n">UsernameNotFoundException</span> <span class="o">{</span>
+
+        <span class="k">return</span> <span class="n">findById</span><span class="o">(</span><span class="n">username</span><span class="o">)</span>
+                    <span class="o">.</span><span class="na">orElseThrow</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="k">new</span> <span class="n">UsernameNotFoundException</span><span class="o">(</span><span class="n">username</span><span class="o">));</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Все, мы закончили.</p>
+<h2 id="-">Бизнес-логика и всё остальное<a class="headerlink" href="#-" title="Permanent link">#</a></h2>
+<p>Весь остальной код мы будем писать по мере надобности.</p>
+<p>Мы анализировали бизнес-логику задачи в <a href="../a1/#-">этом разделе</a>.</p>
+<p>Реализуем пока только следующие операции:</p>
+<ul>
+<li>
+<p><strong>Создание буклиста</strong></p>
+<p>Пользователь посылает команду в приложение для создания буклиста. Команда содержит имя буклиста. Опционально,
+команда может содержать <strong>множество</strong> (множество в отличие от списка хранит только уникальные значения)
+ id книг, которые добавляются в буклист. Приложение должно вернуть уникальный
+идентификатор созданной сущности (буклиста в данном случае), либо описание ошибки.      </p>
+</li>
+<li>
+<p><strong>Добавление книги в существующий буклист</strong></p>
+<p>Пользователь посылает команду в приложение добавлении книгу в буклист. Команда содержит идентификатор буклиста,
+множество идентификаторов добавляемых книг. Приложение возвращает обновленный буклист, либо описание ошибки.</p>
+</li>
+</ul>
+<h3 id="-_1">Способы реализации ввода-вывода или нужно ли плодить модели?<a class="headerlink" href="#-_1" title="Permanent link">#</a></h3>
+<p>Обычная трехслойка, есть контроллер, сервис и репозиторий. Слои обмениваются данными между собой и здесь все не так 
+однозначно. Есть несколько способов:</p>
+<ul>
+<li>
+<p>Вы просто обмениваетесь entity'ями между слоями. Вешаете на них валидацию, забиваете на факт того, что все 3 слоя
+от них зависят, просто и со вкусом.</p>
+<p>Плюсы:</p>
+<ul>
+<li>
+<p>Не надо писать лишних моделек</p>
+</li>
+<li>
+<p>Не надо писать конвертеры из одних моделей в другие</p>
+</li>
+</ul>
+<p>Минусы:</p>
+<ul>
+<li>Когда надо отдать данные, не укладывающиеся в структуру существующих моделей у вас будут проблемки </li>
+<li>Если добавлять аннотации на валидацию, то количество аннотаций достигнет критической отметки</li>
+</ul>
+</li>
+<li>
+<p>Вы пилите отдельные модели для команд от пользователя и для представления (view). Плюсы и минусы описаны выше, 
+только наоборот.            </p>
+</li>
+</ul>
+<p>Первый способ подходит для маленьких сервисов, которые проще переписать с 0, чем менять полпроекта,
+второй -- для монолитов и сервисов побольше.</p>
+<p>Мы выбираем второй путь.       </p>
+<h3 id="-_2">Алгоритм написания бизнес-логики и около того<a class="headerlink" href="#-_2" title="Permanent link">#</a></h3>
+<p>Алгоритм написания бизнес-логики и около того довольно прост.</p>
+<ol>
+<li>
+<p>Пишем модельку для команды (пакет <code>io.github.eutkin.crud.request</code>). 
+Модель должна содержать данные, которые приходят извне и необходимые для совершения операции</p>
+</li>
+<li>
+<p>Пишем модельку для отображения данных в пакет <code>io.github.eutkin.crud.view</code>. Модель содержит информацию,
+которую мы хотим вернуть пользователю.</p>
+</li>
+<li>
+<p>Пишем конвертеры из команды в сущность и из сущности и представление</p>
+</li>
+<li>
+<p>Пишем интерфейс и реализацию сервиса с бизнес логикой:</p>
+<p>а. Конвертируем команду в сущность. 
+б. Манипулируем сущностями.
+в. Конвертируем в представление</p>
+</li>
+<li>
+<p>Если понадобится, пишем репозитории, но стараемся обходится без них (спасибо каскадным операциям)</p>
+</li>
+<li>
+<p>Пишем фасад, который объединит наши сервисы с бизнес логикой (чтобы в клиентский код не пришлось инжектить кучу
+сервисов)</p>
+</li>
+<li>
+<p>Пишем контроллер для операции. </p>
+</li>
+</ol>
+<p>Примеры реализации не забываем смотреть на <a href="(https://github.com/eutkin/crud)">гите</a> (вы же скачали себе проект, да?)</p>
                 
                   
                 
