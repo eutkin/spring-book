@@ -471,9 +471,9 @@ public interface UserRepository
     множество идентификаторов добавляемых книг. Приложение возвращает обновленный буклист, либо описание ошибки.
 
 
-### Способы реализации ввода-вывода или нужно ли плодить модели?
+### Способы реализации ввода-вывода или зачем плодить модели?
 
-Обычная трехслойка, есть контроллер, сервис и репозиторий. Слои обмениваются данными между собой и здесь все не так 
+Обычная трехслойка, есть контроллер, сервис и репозиторий. Слои обмениваются данными между собой, но здесь все не так 
 однозначно. Есть несколько способов:
 
 * Вы просто обмениваетесь entity'ями между слоями. Вешаете на них валидацию, забиваете на факт того, что все 3 слоя
@@ -481,14 +481,14 @@ public interface UserRepository
     
     Плюсы:
         
-    * Не надо писать лишних моделек
-    
+    * Не надо писать лишних моделек    
     * Не надо писать конвертеры из одних моделей в другие
         
     Минусы:
     
     * Когда надо отдать данные, не укладывающиеся в структуру существующих моделей у вас будут проблемки 
     * Если добавлять аннотации на валидацию, то количество аннотаций достигнет критической отметки
+    * Нельзя менять структуру входных и выходных данных независимо от реляционной структуры
     
 * Вы пилите отдельные модели для команд от пользователя и для представления (view). Плюсы и минусы описаны выше, 
 только наоборот.            
@@ -500,7 +500,9 @@ public interface UserRepository
 
 ### Алгоритм написания бизнес-логики и около того
 
-Алгоритм написания бизнес-логики и около того довольно прост.
+#### Как написать бизнес-логику за [2 минуты](https://www.youtube.com/watch?v=NAIgfvZf7X8)
+
+Алгоритм написания бизнес-логики и всяких вспомогательных классов из других слоев довольно прост.
 
 1. Пишем модельку для команды (пакет `io.github.eutkin.crud.request`). 
 Модель должна содержать данные, которые приходят извне и необходимые для совершения операции
@@ -524,10 +526,333 @@ public interface UserRepository
 
 Примеры реализации не забываем смотреть на [гите]((https://github.com/eutkin/crud)) (вы же скачали себе проект, да?)
 
+#### RequestDTO & ViewDTO. Как и зачем
+
+Моделька Реквест содержит только те данные, которые необходимы для выполнения того или иного действия. Да, в принципе 
+можно использовать и сущности, но это не очень удобно при взаимодействии с вашим API, так как нужно будет соблюдать
+правильную структуру. А тащить реляционную модель еще и в API как то совсем непрактично и избыточно. 
+
+Плюс отдельной модельки в том, что на нее можно повесить кучу аннотаций для валидации. Еще как прием, можно каждому
+реквесту делать поле с пользователем, чтобы отдельно его не надо было передавать. А пользователь довольно часто 
+бывает нужен.
+
+Если структура входных данных изменилась, то вслед за этим меняется только набор полей реквеста, его конвертер и
+реализация с бизнес-логикой. **Интерфейсы не меняются**.
+
+Моделька View это не то View из MVC (но очень похоже). Наша View большее определяет структуру и набор данных,
+некоторые правила их отображения. А уже затем она преобразуется во представление в классическом смысле (html, json, 
+xml).
+
+#### Конвертеры
+
+Но если структура входных и выходных данных отличается от реляционной модели, а бизнес-логика в основном строится на
+манипуляции сущностями, то где хранить информацию о преобразованиях DTO в Entity и наоборот? 
+Данная логика хранится в конвертерах. 
+
+Для решения задачи преобразования одной сущности в другую существует огромное количество инструментов. Самый 
+популярный вариант это [Dozer](http://dozer.sourceforge.net/). Но я выбрал [MapStruct](http://mapstruct.org/).
+
+#### Сервисы
+
+Вот пример сервиса, который создает буклист для пользователя. 
+
+```java
+/**
+* Сервис по созданию буклиста.
+* 
+* Буклист можно создать как пустым, так и с заданным набором книг
+* 
+*/
+@Service // (1)
+@Transactional // (2)
+public class DefaultBooklistCreator implements BooklistCreator {
+
+    // Конвертер из запроса в сущность
+    private final CreateBooklistRequestMapper requestMapper;
+    // Конвертер из сущности в ее представление
+    private final BooklistViewMapper viewMapper;
+    // Репозиторий для буклиста
+    private final BooklistRepository booklistRepository;
+
+    public DefaultBooklistCreator(
+            CreateBooklistRequestMapper requestMapper,
+            BooklistViewMapper viewMapper,
+            BooklistRepository booklistRepository
+    ) {
+        // обязательно проверяем, что у нас в аргументах нет null значений.
+        // Так мы обнаружим проблему во время поднятия контекста, а не во время
+        // работы приложения
+        this.requestMapper = requireNonNull(requestMapper);
+        this.viewMapper = requireNonNull(viewMapper);
+        this.booklistRepository = requireNonNull(booklistRepository);
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    @Override
+    public BooklistView createForUser(@NonNull CreateBooklistRequest request) {
+        Booklist booklist = requestMapper.convert(request);
+        Booklist savedBooklist = booklistRepository.save(booklist); // (3)
+        return viewMapper.convert(savedBooklist);
+    }
+}
+```
+1. Аннотация Сервис полностью аналогична @Component,
+    но является маркером для классов, хранящих бизнес-логику,
+    чтобы не путать их с инфраструктурными штуками
+2. Аннотация, которая оборачивает метод (если над методом стоит),
+либо все методы класса (если над классом) в транзакцию. 
+
+    Работает это так: во время поднятия контекста для бинов, 
+    с такой аннотацией создается прокси-класс, который оборачивает
+    метод класса в транзацию:
+
+```java
+// это приблизительный код 
+public class BooklistCreatorProxy implements BooklistCreator {
+    public BooklistView createForUser(@NonNull CreateBooklistRequest request) {
+       var tx = transactionManager.createTransaction();
+       try {
+           var result = invokeMethod(arg);
+           tx.commit();
+           return result;
+       } catch (Throwable ex) {
+           tx.rollback();
+           throw ex;
+       }
+    } 
+}
+```
+
+3. Супер сложная логика, да?  Почему так? Потому что здесь бизнес-логика заключается в том, что нам надо добавить
+определенные сущности и установить их взаимосвязи с уже существующими. А там алгоритм простой. Правильно преобразовать
+входные данные в структуру реляционной модели и сохранить. Поэтому большая часть ответственности ложится на плечи 
+конвертера:
+
+```java
+@Mapper(componentModel = "spring")
+public interface CreateBooklistRequestMapper {
+
+
+    @Mapping(source = "owner", target = "author")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "books", target = "books")
+    @NonNull
+    Booklist convert(@NonNull CreateBooklistRequest source);
+
+    default Book uuidToBook(UUID book) {
+        return new Book().setId(book);
+    }
+
+    @AfterMapping
+    default void fillBooklistOnAuthor(@MappingTarget Booklist booklist) {
+        booklist.getAuthor().addBooklist(booklist);
+    }
+}
+```
+
+Мы преобразуем request в буклист, задавая структуру. Вспомним устройство сущностей, [тыкни](spring-crud.md#_3).
+Что нам надо сделать? Сохранить буклист, его связь через с пользователями через автора, связь с пользователями
+через кросс-таблицу с пользователями (у каких пользователей есть этот буклист), связь буклиста с его книгами. 
+
+Например, что сохранить связь между буклистом и книгами, надо присвоить ему `Set<Book>`, каждая из `Book` которой имеет
+заполненный id (остальные поля можно не заполнять, мы же не сами книги сохраняем, а только связь, для которой нужны 
+только id)
+
+???+ tip "Сохранение дочерних сущностей"
+    Если же нам надо сохранить не только связи, но и сами сущности, то в аннотации `@OneToMany`, `@ManyToMany`, 
+    `@ManyToOne`надо добавить параметр `cascade = CascadeType.PERSIST`.
+
     
+В итоге, правильно заполненная структура сущностей позволит нам сохранить именно то, что необходимо. Но на самом деле
+это все по началу будет непросто, здесь вы набьете много шишек.
+
+#### Репозитории
+
+Если в сервисе вам понадобится какой-то репозиторий, например, `BooklistRepository`, то создаем его. Подход "сначала
+создадим на каждую сущность по репозиторию, а там разберемся" не очень хорош, так как, во-первых, заставляет плодить
+ненужные сущности, а, во-вторых, подмывает использовать вас несколько репозиториев там, где это не нужно. 
+
+#### Контроллеры
+
+Если у вас есть моделька request'a, значит нужен контроллер, который будет его принимать, это раз. А два, нужно как-то
+обрабатывать ошибки. 
+
+```java
+@RestController
+@RequestMapping("/api/booklist")
+public class BooklistRestController {
+
+    private final BooklistServiceFacade booklistService;
+
+    public BooklistRestController(BooklistServiceFacade booklistService) {
+        this.booklistService = requireNonNull(booklistService);
+    }
+
+    @PostMapping
+    public BooklistView create(@RequestBody @Valid CreateBooklistRequest request) {
+        return booklistService.createForUser(request);
+    }
+}
+```
+
+Видите, как все просто и аккуратно. Спринг очень хорош тем, что много грязи остается не видной глазу.
 
 
+#### Исключения
 
+Исключения в яве делятся на два типа -- checked  и unchecked.
+
+Первые являются ожидаемыми исключениями при моделировании бизнес-процесса. Например, если вы сохраняете буклист с 
+несуществующей книгой. Или, например, вы пытаетесь купить билет в кинотеатр, а мест уже нет. То есть ошибки абсолютно
+нормальные, про возможность их возникновения вы знаете и знаете условия их возникновения. Сам язык заставляет делать
+варианты обработок этих ошибок.
+
+Вторые бросаются если происходит нештатная ситуация. База упала, кончилась память, вы не сделали проверку на null и т.д.
+Unchecked потому что не надо их проверять, так как они появляются неожиданно, как татаро-монгольское иго.
+
+Задумка хорошая, но после 100500 try-catch где надо и не надо, все пришли к выводу, что давайте все исключения будут
+unchecked. А программист сам решает, проверять или нет.
+
+По поводу обработок исключений.
+
+??? danger "Warning"
+
+    Далее идет прием, который не всегда нужен. Надо понимать, что обработка ошибок очень сильно завязана на фронт-енд,
+    а данный прием просто позволит отдавать русскоязычные сообщения об ошибке
+
+Для сервисного слоя, если у вас есть специфичные ошибки, то я предлагаю завести специальный класс `ServiceException`.
+
+```java
+public abstract class ServiceException extends RuntimeException {
+
+    /**
+    * Код сообщения с текстом ошибки. Сообщения лежает в message.properties 
+    */
+    private final String messageCode;
+    /**
+    * Аргументы для сообщения. 
+    */
+    private final Object[] arg;
+
+    public ServiceException(String messageCode, Object... arg) {
+        this.messageCode = messageCode;
+        this.arg = arg;
+    }
+
+    @NonNull
+    public String getMessageCode() {
+        return messageCode;
+    }
+
+    @Nullable
+    public Object[] getArgs() {
+        return arg;
+    }
+}
+```
+
+И его "неожиданный наследник":
+
+```java
+public abstract class UnexpectedServiceException extends ServiceException {
+
+    public UnexpectedServiceException(String messageCode, Object... arg) {
+        super(messageCode, arg);
+    }
+}
+```
+
+И пример исключения:
+
+```java
+public class BooklistNotFoundServiceException extends ServiceException {
+
+    public BooklistNotFoundServiceException(UUID booklist, String displayName) {
+        super("booklist.not-exists", booklist, displayName);
+    }
+}
+```
+
+`messages.properties`:
+
+```properties
+booklist.not-exists = У пользователя <{1}> список книг с id = {0} отсутствует
+```
+ 
+Обычной практикой является создание единого `ControllerAdvice`, который занимается
+только обработкой ошибок.
+
+```java
+@ControllerAdvice
+public class ExceptionHandlerAdvice
+                // Стандартный интерфейс спринга, который нужен для
+                // true инжекта messageSource (штука, для доступа к message.properties 
+                implements MessageSourceAware {
+
+    private MessageSource messageSource;
+
+    // Обрабатывыаем наши собственные ошибки
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<Map<String, String>> handle(
+            ServiceException ex, Locale locale) {
+        HttpStatus statusCode = ex instanceof UnexpectedServiceException 
+                                        ? INTERNAL_SERVER_ERROR : BAD_REQUEST;
+        String message = messageSource.getMessage(
+                ex.getMessageCode(), ex.getArgs(), locale);
+        return status(statusCode)
+                    .body(Collections.singletonMap("error", message));
+    }
+
+    // Обрабатываем ошибки нарушения ограничений реляционной СУБД.
+    // Например, при попытки связать сущность с несуществующей сущностью
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handle(
+            DataIntegrityViolationException ex, Locale locale) {
+        String message = messageSource.getMessage("conflict", null, locale);
+        return status(CONFLICT).body(Collections.singletonMap("error", message));
+    }
+
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
+    // Ошибки валидации
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handle(
+            ConstraintViolationException ex, Locale locale) {
+        return ex.getConstraintViolations()
+                .stream()
+                .collect(toMap(
+                        v -> v.getPropertyPath().toString(), 
+                        ConstraintViolation::getMessage
+                        )
+                    );
+
+    }
+
+    // Тоже ошибки валидации
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, String> handle(
+            MethodArgumentNotValidException e, Locale locale) {
+        return e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .collect(toMap(
+                        FieldError::getField, 
+                        error -> messageSource.getMessage(error, locale)
+                        )
+                    );
+    }
+
+}
+```
 
 
 
